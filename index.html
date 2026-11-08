@@ -195,6 +195,7 @@ a.rr{text-decoration:none;color:var(--ink);border-radius:10px;padding-left:6px;p
 .admbar{display:none;position:fixed;left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:8;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);color:var(--ac-text)}
 #top a{display:inline-flex;align-items:center}#top a svg{display:block}
 .f.c2x{grid-template-columns:1fr 1fr}
+.seg2{display:flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}.seg2 button{border:0;background:none;color:var(--muted);padding:6px 14px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer}.seg2 button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent,#fff);font-weight:700}
 @media (max-width:760px){.bk{grid-template-columns:1fr 1fr}.bh{display:none}.bc .bl{display:block}}
 @media (max-width:760px){.cp,.g2{grid-template-columns:1fr}.art{position:relative;top:0;min-height:420px}h1{font-size:28px}.f.c2{grid-template-columns:1fr 80px}.row{grid-template-columns:1fr 1fr 36px}.row input:nth-child(3){grid-column:1/3}.kv{grid-template-columns:90px 1fr}}
 </style>
@@ -272,7 +273,7 @@ function renderHome(){
   view.innerHTML=`<div class="homewrap"><section class="pf"><div><div class="ph">${p.img?`<img src="${esc(p.img)}" alt="">`:esc(p.emoji||"🌸")}</div>${String(p.credit||"").trim()?`<p class="cr">ⓒ ${esc(String(p.credit).replace(/^\s*[ⓒ©]\s*/,"").trim())}</p>`:""}</div><div>
     <p class="eyebrow">PROFILE</p><h1>${esc(p.nick||D.site.title)}</h1><p class="lead">${esc(p.tagline)}</p>
     <div class="pk">${L(p.fields).map(f=>`<span>${esc(f.k)}</span><div>${esc(f.v)}</div>`).join("")}</div>
-    <p style="margin-top:22px"><a class="btn pri" href="#owner">오너캐 보러 가기 →</a>${canEdit?` <button class="btn" id="es">✎ 프로필 편집</button>`:""}</p></div></section><p class="adml"><a href="#admin">관리자 페이지</a></p></div>`;
+    <p style="margin-top:22px"><a class="btn pri" href="#owner">오너캐 보러 가기 →</a>${canEdit?` <button class="btn" id="es">✎ 프로필 편집</button>`:""}</p></div></section><p class="adml"><a href="#admin">Planet W612 | 별의 뒷편</a></p></div>`;
   const b=$("es");if(b)b.onclick=()=>{editing={site:true};render()};
 }
 const charTabs=k=>`<div class="stabs"><button type="button" class="cgo" data-go="characters" aria-pressed="${k==="list"}">캐릭터</button><button type="button" class="cgo" data-go="relations" aria-pressed="${k==="rel"}">관계</button></div>`;
@@ -309,6 +310,19 @@ const pcard=p=>{const rows=[["성별",p.gender||"—"],["키",p.height||"—"],.
   const inner=`<div class="pci">${p.img?`<img src="${esc(p.img)}" alt="">`:"👤"}</div><div class="pcb"><span class="tg0">${p.me?"내 캐릭터":"상대"}</span><b>${esc(p.n)}</b><dl>${rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div>`;
   return p.id?`<a class="pc${p.me?" me":""}" href="#${esc(p.id)}">${inner}</a>`:`<div class="pc${p.me?" me":""}">${inner}</div>`};
 const parseInfo=v=>String(v||"").split(/\n+/).map(l=>l.trim()).filter(Boolean).map(l=>{const m=l.match(/^([^:：]+)[:：]\s*(.*)$/);return m?{k:m[1].trim(),v:m[2].trim()}:{k:"",v:l}});
+function renderSizeForm(){
+  setAccent(D.site.color);
+  const cnt={};D.trpg.logs.forEach(g=>{const s=String(g.size||"").trim();if(s)cnt[s]=(cnt[s]||0)+1});
+  const items=Object.keys(cnt).sort((x,y)=>cnt[y]-cnt[x]);
+  view.innerHTML=`<section class="card"><h2>구성 항목 관리</h2><p class="sub" style="margin:0 0 12px">이름을 고치면 그 구성을 쓴 모든 기록에 한꺼번에 반영돼요. 같은 이름으로 바꾸면 하나로 합쳐지고, 칸을 비우면 해당 기록의 구성이 비워져요. 기록 하나만 고치려면 기록의 ✎ 편집에서 바꿔 주세요.</p>
+    <div id="sz-list">${items.map(s=>`<div class="row" style="grid-template-columns:1fr 64px"><input class="sz" data-o="${esc(s)}" value="${esc(s)}"><span class="sub" style="margin:0;text-align:right">${cnt[s]}건</span></div>`).join("")||`<p class="sub">등록된 구성이 없어요.</p>`}</div>
+    <div class="actions"><button class="btn pri" id="sz-ok" type="button">저장</button><button class="btn" id="sz-no" type="button">취소</button></div></section>`;
+  $("sz-no").onclick=()=>{editing=null;render()};
+  $("sz-ok").onclick=()=>{const map={};document.querySelectorAll("#sz-list .sz").forEach(i=>{map[i.dataset.o]=i.value.trim()});
+    let n=0;D.trpg.logs.forEach(g=>{const s=String(g.size||"").trim();if(s&&Object.prototype.hasOwnProperty.call(map,s)&&map[s]!==g.size){g.size=map[s];n++}});
+    commit("trpg")};
+}
+addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("#szm");if(b&&canEdit&&!editing){editing={sizes:true};render()}});
 function readRel(row){return {t:row.querySelector(".rt").value.trim(),d:row.querySelector(".rd").value.trim(),tags:splitTags(row.querySelector(".rtg").value),gallery:[...row.querySelectorAll(".gi")].map(g=>({src:g.querySelector(".gi-img").value,label:g.querySelector(".gi-cap").value.trim()})).filter(x=>x.src),members:[...row.querySelectorAll(".mb")].map(b=>({n:b.querySelector(".mb-n").value.trim(),gender:b.querySelector(".mb-g").value.trim(),height:b.querySelector(".mb-h").value.trim(),cid:b.querySelector(".mb-c").value,img:b.querySelector(".mb-img").value,info:parseInfo(b.querySelector(".mb-inf").value)})).filter(x=>x.n||x.cid)}}
 const hexs=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
 const unhex=s=>new Uint8Array((String(s).match(/../g)||[]).map(x=>parseInt(x,16)));
@@ -570,8 +584,8 @@ function sheetBody(c){
   return tabs+`${canEdit?`<button class="btn sh-add" type="button" data-r="${esc(sr)}" style="float:right">✎ 시트 편집</button>`:""}
     ${S.title?`<p class="sh-t">${esc(S.title)}</p>`:""}
     ${S.link?`<p><a class="btn" href="${esc(S.link)}" target="_blank" rel="noopener noreferrer">시트 링크 열기 ↗</a></p>`:""}
-    ${statsHtml(S,sr,gOn)}
-    ${L(S.skills).length?`<p class="sh-h">주요 기능</p>${gOn?gaugeRows(L(S.skills),sr,true):`<div class="tags">${L(S.skills).map(s=>`<span>${esc(s.k)} ${esc(s.v)}</span>`).join("")}</div>`}`:""}
+    ${sr==="CoC"?statsHtml(S,sr,gOn):""}
+    ${sr==="CoC"&&L(S.skills).length?`<p class="sh-h">주요 기능</p>${gOn?gaugeRows(L(S.skills),sr,true):`<div class="tags">${L(S.skills).map(s=>`<span>${esc(s.k)} ${esc(s.v)}</span>`).join("")}</div>`}`:""}
     ${S.note?`<p class="sh-n">${esc(S.note)}</p>`:""}
     ${L(S.imgs).length?`<div class="shi">${L(S.imgs).map(u=>`<img class="zm" src="${esc(u)}" alt="시트 이미지" loading="lazy">`).join("")}</div>`:""}`;
 }
@@ -610,9 +624,9 @@ function renderSheetForm(){
   view.innerHTML=`<section class="card"><h2>${esc(e.rule)} 시트 ${has?"편집":"등록"} · ${esc(c.name)}</h2>
     <div class="f"><label>시트 이름 (선택)<input id="s-title" value="${esc(S.title)}" placeholder="예: 탐사자 시트"></label>
     <label>외부 시트 링크 (선택)<input id="s-link" value="${esc(S.link)}" placeholder="https://"></label></div>
-    <label class="ck"><input type="checkbox" id="s-gauge"${gOn?" checked":""}> ${e.rule==="CoC"?"특성치를 방사형 그래프로 표시 (체력·마력·이성은 그래프에 표시되지 않아요)":"숫자 항목을 게이지 바로 표시"}</label>
+    ${e.rule==="CoC"?`<label class="ck"><input type="checkbox" id="s-gauge"${gOn?" checked":""}> ${e.rule==="CoC"?"특성치를 방사형 그래프로 표시 (체력·마력·이성은 그래프에 표시되지 않아요)":"숫자 항목을 게이지 바로 표시"}</label>
     <label style="margin-bottom:6px">능력치 · 항목 <span class="sub">${e.rule==="CoC"?"(특성치는 방사형 그래프로 보여줘요. 기준은 100이에요)":"(최대 칸을 비우면 100 기준이에요. 값에 11/13처럼 적어도 돼요)"}</span></label><div id="s-stats">${rows.map(sRow).join("")}</div><button class="btn" type="button" id="s-addr">＋ 항목 추가</button>
-    <label style="margin:18px 0 6px">주요 기능</label><div id="s-skills">${L(S.skills).map(kRow).join("")}</div><button class="btn" type="button" id="s-addk">＋ 기능 추가</button>
+    <label style="margin:18px 0 6px">주요 기능</label><div id="s-skills">${L(S.skills).map(kRow).join("")}</div><button class="btn" type="button" id="s-addk">＋ 기능 추가</button>`:""}
     ${e.rule==="CoC"?`<datalist id="sk-dl">${CoC_SKILLS.map(k=>`<option value="${esc(k)}">`).join("")}</datalist>`:""}
     <div class="f" style="margin-top:14px"><label>메모 (선택)<textarea id="s-note">${esc(S.note)}</textarea></label></div>
     <label style="margin-bottom:6px">시트 이미지 (캡처 등, 여러 장 가능)</label><div id="s-imgs"></div>
@@ -621,15 +635,15 @@ function renderSheetForm(){
   const drawI=()=>{$("s-imgs").innerHTML=e.imgs.map((u,j)=>`<div class="vr"><div class="pv"><img src="${esc(u)}"></div><span class="sub">이미지 ${j+1}</span><span></span><button class="xv" type="button" data-rmimg="${j}" aria-label="삭제">×</button></div>`).join("")||`<p class="sub">등록된 이미지가 없어요.</p>`};
   drawI();
   view.onclick=ev=>{const t=ev.target;if(t.classList.contains("x"))t.closest(".row").remove();if(t.dataset&&t.dataset.rmimg!=null){e.imgs.splice(+t.dataset.rmimg,1);drawI()}};
-  $("s-addr").onclick=()=>$("s-stats").insertAdjacentHTML("beforeend",sRow({k:"",v:"",m:""}));
-  $("s-addk").onclick=()=>$("s-skills").insertAdjacentHTML("beforeend",kRow({k:"",v:""}));
+  if($("s-addr"))$("s-addr").onclick=()=>$("s-stats").insertAdjacentHTML("beforeend",sRow({k:"",v:"",m:""}));
+  if($("s-addk"))$("s-addk").onclick=()=>$("s-skills").insertAdjacentHTML("beforeend",kRow({k:"",v:""}));
   $("s-img").onchange=async ev=>{for(const f of ev.target.files){try{e.imgs.push(await toData(f,1400))}catch(_){toast("이미지를 읽지 못했어요.")}}ev.target.value="";drawI()};
   $("s-no").onclick=()=>{editing=null;render()};
   $("s-ok").onclick=()=>{
     const stats=[...document.querySelectorAll("#s-stats .row")].map(r=>({k:r.querySelector(".sk").value.trim(),v:r.querySelector(".sv").value.trim(),m:r.querySelector(".sm").value.trim()})).filter(s=>s.k||s.v);
     const skills=[...document.querySelectorAll("#s-skills .row")].map(r=>({k:r.querySelector(".kk2").value.trim(),v:r.querySelector(".kv2").value.trim()})).filter(s=>s.k||s.v);
     let link=$("s-link").value.trim();if(link&&!/^https?:\/\//i.test(link))link="https://"+link;
-    const sh={title:$("s-title").value.trim(),link,gauge:$("s-gauge").checked,stats,skills,note:$("s-note").value.trim(),imgs:e.imgs};
+    const sh={title:$("s-title").value.trim(),link,gauge:$("s-gauge")?$("s-gauge").checked:false,stats,skills,note:$("s-note").value.trim(),imgs:e.imgs};
     if(!sh.title&&!sh.link&&!stats.length&&!skills.length&&!sh.note&&!sh.imgs.length){toast("내용을 하나 이상 입력해 주세요.");return}
     c.sheets={...(c.sheets||{}),[e.rule]:sh};
     try{sessionStorage.setItem("sr",e.rule)}catch(_){}
@@ -675,13 +689,13 @@ function renderSheetFormOld(){
 function renderChar(c){
   setAccent(c.color);
   const cm=D.comms.filter(m=>L(m.cids).includes(c.id));
-  const lg=D.trpg.logs.filter(g=>L(g.cids).includes(c.id));
+  const lg=D.trpg.logs.filter(g=>L(g.cids).includes(c.id)).reverse();
   view.innerHTML=`<p><a class="btn" href="#characters">← 캐릭터 목록</a></p><section class="cp"><div class="art" id="art">${artHTML(c,0)}</div><div>
     <p class="eyebrow">CHARACTER</p><h1>${esc(c.name)}</h1>${c.native?`<p class="nat">${esc(c.native)}</p>`:""}${L(c.altNames).length?`<p class="alt">${L(c.altNames).map(a=>`<span>${esc(a.name)}${a.native?` <i class="nt">${esc(a.native)}</i>`:""}${a.label?` <em>${esc(a.label)}</em>`:""}</span>`).join("")}</p>`:""}<p class="lead">${esc([c.gender,c.height].filter(Boolean).join(" · "))}</p>
     <div class="chips">${L(c.keywords).map(b=>`<span class="chip">${esc(b)}</span>`).join("")}${canEdit?`<button class="btn" id="edit">✎ 편집</button>`:""}</div>
     ${c.oneline?`<div class="card"><h2>한 줄 정의</h2><p style="margin:0">${esc(c.oneline)}</p></div>`:""}
     ${L(c.traits).length?`<div class="card"><h2>성격</h2><div class="tags pro">${L(c.traits).map(t=>`<span>${esc(t)}</span>`).join("")}</div></div>`:""}
-    ${L(c.au).length?`<div class="card"><h2>AU · 버전</h2><div class="tags">${L(c.au).map(t=>`<span>${esc(t)}</span>`).join("")}</div></div>`:""}
+    
     </div></section>
     <div class="g2"><section class="card"><h2>관계</h2>${L(c.rels).map((r,i)=>`<a class="rel" href="#r-${esc(c.id)}-${i}"><i>${relAv(c,r)}</i><div><b>${esc(relTitle(c,r))}</b><small>${esc(relCast(c,r).map(p=>p.n).join(" · "))}</small>${tagsHtml(r.tags)}</div></a>`).join("")||`<p class="sub">등록된 관계가 없어요.</p>`}${canEdit?`<button class="btn ed-rel" type="button" data-id="${esc(c.id)}">＋ 관계 추가</button>`:""}</section>
     <section class="card"><h2>참여한 커뮤 · ${cm.length}</h2>${cm.map(m=>`<div class="li"><div class="m">${esc(m.name)}<small>${esc(m.kind)}</small></div><span class="pill">${esc(m.status)}</span></div>`).join("")||`<p class="sub">연결된 커뮤가 없어요.</p>`}</section></div>
@@ -899,9 +913,10 @@ function drawTpane(){
       ${L(T.books).map(b=>`<tr><td>${rpill(b.rule)}</td><td>${esc(b.title)}</td><td>${esc(b.sc)}</td><td>${esc(b.pp)}</td><td>${esc(b.author)}</td></tr>`).join("")}</table></div></section>`;
   else{
     const rules=["전체",...new Set(T.logs.map(g=>g.rule).filter(Boolean))];
-    el.innerHTML=`<h2>플레이 기록 · ${T.logs.length}</h2>${canEdit?`<p><button class="btn" id="addlog">＋ 기록 추가</button></p>`:""}
-      <div class="tools"><input id="tq" type="search" placeholder="시나리오·참여자·저자 검색" value="${esc(tq)}"><div class="seg">${rules.map(s=>`<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div></div><div class="card" id="tlist"></div>`;
+    el.innerHTML=`<h2>플레이 기록 · ${T.logs.length}</h2>${canEdit?`<p><button class="btn" id="addlog">＋ 기록 추가</button> <button class="btn" id="szm" type="button">구성 항목 관리</button></p>`:""}
+      <div class="tools"><input id="tq" type="search" placeholder="시나리오·참여자·저자 검색" value="${esc(tq)}"><div class="seg">${rules.map(s=>`<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div><div class="seg2" id="tsort"><button type="button" data-o="new">최신순</button><button type="button" data-o="old">오래된순</button></div></div><div class="card" id="tlist"></div>`;
     $("tq").oninput=e=>{tq=e.target.value;drawTrpg()};
+    el.querySelectorAll("#tsort button").forEach(x=>x.onclick=()=>{tsort=x.dataset.o;try{sessionStorage.setItem("tsort",tsort)}catch(_){}drawTrpg()});
     el.querySelectorAll(".seg button").forEach(x=>x.onclick=()=>{tr=x.dataset.s;drawTrpg()});
     drawTrpg();
   }
@@ -978,11 +993,13 @@ function renderTrpgOld(){
   document.querySelectorAll(".seg button").forEach(x=>x.onclick=()=>{tr=x.dataset.s;drawTrpg()});
   drawTrpg();
 }
+let tsort=(()=>{try{return sessionStorage.getItem("tsort")||"new"}catch(_){return "new"}})();
 function drawTrpg(){
   document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.s===tr));
+  document.querySelectorAll("#tsort button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.o===tsort));
   const k=tq.trim().toLowerCase();
   const a=D.trpg.logs.filter(g=>(tr==="전체"||g.rule===tr)&&(!k||[g.title,g.chars,g.author,g.rule,g.size].join(" ").toLowerCase().includes(k)));
-  $("tlist").innerHTML=a.map(g=>{
+  $("tlist").innerHTML=(tsort==="new"?a.slice().reverse():a).map(g=>{
     const who=names(g.chars).map(n=>{const c=L(g.cids).map(id=>D.chars.find(z=>z.id===id)).find(y=>y&&same(n,y));return c?`<a href="#${esc(c.id)}" style="color:var(--ac-text);text-decoration:none">${esc(n)}</a>`:esc(n)}).join(", ");
     const rows=[["참여자",who],["구성",esc(g.size)],["저자",esc(g.author)]].filter(r=>r[1]);
     return `<div class="li lg"><div class="m"><div class="lh"><b>${esc(g.title)}</b>${rpill(g.rule)}${g.role?`<span class="pill on">${esc(g.role)}</span>`:""}</div>${rows.length?`<div class="lk">${rows.map(r=>`<span>${r[0]}</span><div>${r[1]}</div>`).join("")}</div>`:""}</div>${canEdit?`<button class="btn ed" data-i="${D.trpg.logs.indexOf(g)}" aria-label="기록 편집">✎</button>`:""}</div>`}).join("")||`<div class="empty">결과가 없어요.</div>`;
@@ -1156,7 +1173,7 @@ function render(){
     if(canEdit){const a=document.createElement("button");a.className="tab add";a.textContent="＋ 캐릭터 추가";
       a.onclick=()=>{editing={isNew:true,name:"",emoji:"🙂",img:"",color:COLORS[D.chars.length%COLORS.length],gender:"",height:"",keywords:[],traits:[],oneline:"",rels:[]};render()};sel.append(a)}
   }
-  if(editing){editing.owner?renderOwnerForm():editing.rel?renderRelForm():editing.sheet?renderSheetForm():editing.trpg?renderTrpgForm():editing.log?renderLogForm():editing.comm?renderCommForm():editing.site?renderSiteForm():renderForm(editing);return}
+  if(editing){editing.sizes?renderSizeForm():editing.owner?renderOwnerForm():editing.rel?renderRelForm():editing.sheet?renderSheetForm():editing.trpg?renderTrpgForm():editing.log?renderLogForm():editing.comm?renderCommForm():editing.site?renderSiteForm():renderForm(editing);return}
   if(r.p==="home")renderHome();
   else if(r.p==="admin")renderAdmin();
   else if(r.p==="owner")renderOwner();
