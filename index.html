@@ -196,6 +196,7 @@ a.rr{text-decoration:none;color:var(--ink);border-radius:10px;padding-left:6px;p
 #top a{display:inline-flex;align-items:center}#top a svg{display:block}
 .f.c2x{grid-template-columns:1fr 1fr}
 .seg2{display:flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}.seg2 button{border:0;background:none;color:var(--muted);padding:6px 14px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer}.seg2 button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent,#fff);font-weight:700}
+.topbtn{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ac-text);cursor:pointer;display:grid;place-items:center;z-index:8;backdrop-filter:blur(10px);box-shadow:0 8px 22px -8px color-mix(in srgb,var(--accent) 45%,transparent);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s,transform .25s}.topbtn.on{opacity:1;pointer-events:auto;transform:none}.topbtn:hover{box-shadow:0 10px 26px -6px color-mix(in srgb,var(--accent) 60%,transparent)}
 @media (max-width:760px){.bk{grid-template-columns:1fr 1fr}.bh{display:none}.bc .bl{display:block}}
 @media (max-width:760px){.cp,.g2{grid-template-columns:1fr}.art{position:relative;top:0;min-height:420px}h1{font-size:28px}.f.c2{grid-template-columns:1fr 80px}.row{grid-template-columns:1fr 1fr 36px}.row input:nth-child(3){grid-column:1/3}.kv{grid-template-columns:90px 1fr}}
 </style>
@@ -334,6 +335,35 @@ const calcEdit=()=>ownerOk&&adm&&!(D.admin&&D.admin.def);
 const lk=()=>{try{return JSON.parse(localStorage.getItem("admlk")||"{}")}catch(_){return {}}};
 const lks=o=>{try{localStorage.setItem("admlk",JSON.stringify(o))}catch(_){}};
 const pwBad=p=>{if(p.length<8)return "새 비밀번호는 8자 이상이어야 해요.";if(/^\d+$/.test(p)&&p.length<12)return "숫자만 쓸 때는 12자 이상이어야 해요. 문자를 섞어 주세요.";if(/^(.)\1+$/.test(p))return "같은 글자만 반복한 비밀번호는 쓸 수 없어요.";if(["password","12345678","qwertyui","admin1234","11111111","00000000","1q2w3e4r"].includes(p.toLowerCase()))return "너무 흔한 비밀번호예요. 다른 비밀번호를 써 주세요.";return ""};
+function imgStats(){const t={"캐릭터 일러스트":0,"카드 썸네일":0,"일러스트 버전":0,"관계 이미지":0,"시트 이미지":0,"오너캐·프로필":0};
+  const n=(s)=>typeof s==="string"?s.length:0;
+  D.chars.forEach(c=>{t["캐릭터 일러스트"]+=n(c.img);t["카드 썸네일"]+=n(c.thumb);L(c.imgs).forEach(x=>{t["일러스트 버전"]+=n(x.src)});
+    L(c.rels).forEach(r=>{L(r.members).forEach(m=>{t["관계 이미지"]+=n(m.img)});L(r.gallery).forEach(g=>{t["관계 이미지"]+=n(g.src)})});
+    Object.values(c.sheets||{}).forEach(sh=>{L(sh.imgs).forEach(u=>{t["시트 이미지"]+=n(u)})})});
+  const o=D.owner||{};t["오너캐·프로필"]=n(o.img)+L(o.gallery).reduce((a,g)=>a+n(g.src),0)+n(D.profile&&D.profile.img);return t}
+async function recompress(src,maxDim,q){
+  const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
+  const s=Math.min(1,maxDim/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),hh=Math.max(1,Math.round(im.height*s));
+  const cv=document.createElement("canvas");cv.width=w;cv.height=hh;cv.getContext("2d").drawImage(im,0,0,w,hh);
+  const o=cv.toDataURL("image/webp",Math.max(.5,q));return o.length<src.length*.95?o:src}
+async function shrinkAll(f,qd,prog){
+  const jobs=[],add=(o,k,d,q)=>{if(o&&typeof o[k]==="string"&&o[k].startsWith("data:image")&&o[k].length>40000)jobs.push([o,k,d,q])};
+  D.chars.forEach(c=>{add(c,"img",900*f,.78-qd);add(c,"thumb",420,.72-qd);L(c.imgs).forEach(x=>add(x,"src",900*f,.78-qd));
+    L(c.rels).forEach(r=>{L(r.members).forEach(m=>add(m,"img",480*f,.76-qd));L(r.gallery).forEach(g=>add(g,"src",900*f,.78-qd))});
+    Object.values(c.sheets||{}).forEach(sh=>{const a=L(sh.imgs);a.forEach((u,i)=>add(a,i,1000*f,.8-qd))})});
+  if(D.owner){add(D.owner,"img",1000*f,.78-qd);L(D.owner.gallery).forEach(g=>add(g,"src",900*f,.78-qd))}
+  if(D.profile)add(D.profile,"img",800*f,.78-qd);
+  const st=()=>Object.values(imgStats()).reduce((a,b)=>a+b,0)/1e6,before=st();
+  for(let i=0;i<jobs.length;i++){const [o,k,d,q]=jobs[i];try{o[k]=await recompress(o[k],d,q)}catch(_){}
+    if(i%5===0){prog(`${i+1}/${jobs.length}`);await new Promise(r=>setTimeout(r,0))}}
+  return {before,after:st()}}
+let topOn=false;
+function topUpd(){const b=$("topbtn");if(b)b.classList.toggle("on",topOn&&(window.scrollY||document.documentElement.scrollTop)>300)}
+function topBtn(p){topOn=["chars","comm","trpg"].includes(p);let b=$("topbtn");
+  if(!b){b=document.createElement("button");b.id="topbtn";b.type="button";b.className="topbtn";b.setAttribute("aria-label","맨 위로");b.title="맨 위로";
+    b.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
+    b.onclick=()=>scrollTo({top:0,behavior:"smooth"});document.body.append(b);addEventListener("scroll",topUpd,{passive:true})}
+  topUpd()}
 function admBar(){let b=$("admbar");
   if(!b){b=document.createElement("button");b.id="admbar";b.type="button";b.className="admbar";b.onclick=()=>{adm=false;try{sessionStorage.removeItem("adm")}catch(_){}canEdit=false;editing=null;render()};document.body.append(b)}
   b.style.display=canEdit?"block":"none";b.textContent="관리자 모드 · 끄기"}
@@ -364,6 +394,12 @@ function renderAdmin(){
       <div class="f"><label>접근 토큰 (이 탭이 열려 있는 동안만 기억돼요)<input id="gh-t" type="password" autocomplete="off" placeholder="github_pat_로 시작하는 토큰"></label></div>
       <p class="sub" id="gh-msg" style="min-height:1.4em;margin:0;${ownerOk?"":"color:#d33"}">${ownerOk?"연결됐어요. 저장할 수 있어요.":"아직 연결되지 않았어요. 토큰을 넣고 연결 확인을 눌러 주세요."}</p>
       <div class="actions"><button class="btn pri" id="gh-ok" type="button">연결 확인</button><button class="btn" id="gh-off" type="button">연결 끊기</button></div></div>
+    ${(()=>{const st=imgStats(),bytes=new Blob([buildHtml()]).size,pct=Math.min(100,bytes/MAXB*100);
+      return `<div class="card" style="max-width:560px"><h2>용량 관리</h2><span class="gt" style="display:block"><span class="gf" style="--w:${pct.toFixed(1)}%;--rc:${pct>85?"#d33":"var(--accent)"}"></span></span>
+      <p style="margin:8px 0 4px"><b>${(bytes/1e6).toFixed(1)}MB</b> / 최대 ${(MAXB/1e6).toFixed(0)}MB</p>
+      <div class="kv" style="margin:8px 0">${Object.entries(st).map(([k,v])=>`<span>${k}</span><div>${(v/1e6).toFixed(1)}MB</div>`).join("")}</div>
+      <p class="sub">이미지를 올릴 때마다 용량이 늘어나요. 한도에 가까워지면 아래 버튼으로 이미 올린 이미지를 다시 압축해서 줄일 수 있어요. 화질이 조금 낮아지고 되돌릴 수 없으니, 필요할 때만 사용해 주세요.</p>
+      <div class="actions"><button class="btn pri" id="im-1" type="button">이미지 용량 줄이기</button><button class="btn" id="im-2" type="button">더 강하게 줄이기</button></div><p class="sub" id="im-msg" style="min-height:1.4em;margin:8px 0 0"></p></div>`})()}
     <div class="card" style="max-width:460px"><h2>비밀번호 변경</h2><div class="f"><label>현재 비밀번호<input id="pw0" type="password" autocomplete="current-password"></label><label>새 비밀번호 (8자 이상)<input id="pw1" type="password" autocomplete="new-password"></label><label>새 비밀번호 확인<input id="pw2" type="password" autocomplete="new-password"></label></div>
       <p class="sub" id="pw-msg" style="color:#d33;min-height:1.4em;margin:0"></p><div class="actions"><button class="btn pri" id="pw-ok" type="button"${ownerOk?"":" disabled"}>비밀번호 변경</button></div>${ownerOk?"":`<p class="sub">GitHub 연결 후에 변경할 수 있어요.</p>`}<p class="sub" style="margin-top:12px">비밀번호는 암호화해서 저장돼요. 길고 추측하기 어려운 문장형 비밀번호(12자 이상)를 권장해요. 로그인을 5번 틀리면 잠시 입력이 잠겨요.</p></div>`;
   $("gh-ok").onclick=async()=>{const m=$("gh-msg");m.style.color="";const t=$("gh-t").value.trim();
@@ -373,6 +409,15 @@ function renderAdmin(){
     try{const ok=await ghVerify();ownerOk=ok;canEdit=calcEdit();if(ok){render()}else{m.style.color="#d33";m.textContent="이 토큰으로는 저장할 수 없어요. 토큰 권한을 확인해 주세요."}}
     catch(e){ownerOk=false;canEdit=calcEdit();m.style.color="#d33";m.textContent=e.message}};
   $("gh-off").onclick=()=>{try{sessionStorage.removeItem("ghtok")}catch(_){}ownerOk=false;canEdit=false;render()};
+  let imArm=0;
+  const imGo=async(lv,btn)=>{const msg=$("im-msg");
+    if(!canEdit){msg.style.color="#d33";msg.textContent="저장 권한이 있을 때만 사용할 수 있어요.";return}
+    if(imArm!==lv){imArm=lv;msg.style.color="";msg.textContent="한 번 더 누르면 시작해요. 화질이 조금 낮아지고 되돌릴 수 없어요.";setTimeout(()=>{if(imArm===lv){imArm=0;if(msg.isConnected)msg.textContent=""}},5000);return}
+    imArm=0;$("im-1").disabled=$("im-2").disabled=true;
+    try{const r=await shrinkAll(lv===2?.75:1,lv===2?.1:0,n=>{msg.style.color="";msg.textContent=`압축하는 중… ${n}`});
+      msg.textContent=`압축 완료: ${r.before.toFixed(1)}MB → ${r.after.toFixed(1)}MB. 저장하는 중…`;commit("admin")}
+    catch(e){msg.style.color="#d33";msg.textContent="압축하지 못했어요: "+(e&&e.message||"알 수 없는 오류");$("im-1").disabled=$("im-2").disabled=false}};
+  $("im-1").onclick=()=>imGo(1);$("im-2").onclick=()=>imGo(2);
   $("ad-out").onclick=()=>{adm=false;try{sessionStorage.removeItem("adm")}catch(_){}canEdit=false;editing=null;render()};
   $("pw-ok").onclick=async()=>{const msg=$("pw-msg");msg.style.color="#d33";
     const a=$("pw0").value,b=$("pw1").value,c=$("pw2").value;
@@ -688,7 +733,7 @@ function renderSheetFormOld(){
 }
 function renderChar(c){
   setAccent(c.color);
-  const cm=D.comms.filter(m=>L(m.cids).includes(c.id));
+  const cm=D.comms.filter(m=>L(m.cids).includes(c.id)).reverse();
   const lg=D.trpg.logs.filter(g=>L(g.cids).includes(c.id)).reverse();
   view.innerHTML=`<p><a class="btn" href="#characters">← 캐릭터 목록</a></p><section class="cp"><div class="art" id="art">${artHTML(c,0)}</div><div>
     <p class="eyebrow">CHARACTER</p><h1>${esc(c.name)}</h1>${c.native?`<p class="nat">${esc(c.native)}</p>`:""}${L(c.altNames).length?`<p class="alt">${L(c.altNames).map(a=>`<span>${esc(a.name)}${a.native?` <i class="nt">${esc(a.native)}</i>`:""}${a.label?` <em>${esc(a.label)}</em>`:""}</span>`).join("")}</p>`:""}<p class="lead">${esc([c.gender,c.height].filter(Boolean).join(" · "))}</p>
@@ -787,16 +832,19 @@ function renderComm(){
   setAccent(D.site.color);
   const st=["전체",...new Set(D.comms.map(m=>m.status).filter(Boolean))];
   view.innerHTML=`<p class="eyebrow">COMMUNITY</p><h1>참여 커뮤 · ${D.comms.length}</h1><p class="lead">참여했던 커뮤니티와 그때의 캐릭터를 모았어요.</p>${canEdit?`<p><button class="btn" id="addcomm">＋ 커뮤 추가</button></p>`:""}
-    <div class="tools"><input id="cq" type="search" placeholder="커뮤·캐릭터 검색" value="${esc(cq)}"><div class="seg">${st.map(s=>`<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div></div><div class="card" id="clist"></div>`;
+    <div class="tools"><input id="cq" type="search" placeholder="커뮤·캐릭터 검색" value="${esc(cq)}"><div class="seg">${st.map(s=>`<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div><div class="seg2" id="csort"><button type="button" data-o="new">최신순</button><button type="button" data-o="old">오래된순</button></div></div><div class="card" id="clist"></div>`;
   $("cq").oninput=e=>{cq=e.target.value;drawComm()};
   document.querySelectorAll(".seg button").forEach(x=>x.onclick=()=>{cs=x.dataset.s;drawComm()});
+  document.querySelectorAll("#csort button").forEach(x=>x.onclick=()=>{csort=x.dataset.o;try{sessionStorage.setItem("csort",csort)}catch(_){}drawComm()});
   drawComm();
 }
+let csort=(()=>{try{return sessionStorage.getItem("csort")||"new"}catch(_){return "new"}})();
 function drawComm(){
   document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.s===cs));
+  document.querySelectorAll("#csort button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.o===csort));
   const k=cq.trim().toLowerCase();
   const a=D.comms.filter(m=>(cs==="전체"||m.status===cs)&&(!k||[m.name,m.chars,m.kind].join(" ").toLowerCase().includes(k)));
-  $("clist").innerHTML=a.map(m=>{const c=D.chars.find(x=>names(m.chars).some(n=>same(n,x)));
+  $("clist").innerHTML=(csort==="new"?a.slice().reverse():a).map(m=>{const c=D.chars.find(x=>names(m.chars).some(n=>same(n,x)));
     return `<div class="li"><div class="m">${esc(m.name)}<small>${names(m.chars).map(n=>{const x=L(m.cids).map(id=>D.chars.find(z=>z.id===id)).find(y=>y&&same(n,y));return x?`<a href="#${esc(x.id)}" style="color:var(--ac-text);text-decoration:none">${esc(n)}</a>`:esc(n)}).join(", ")} · ${esc(m.kind)}</small></div>${canEdit?`<button class="btn edc" data-i="${D.comms.indexOf(m)}" aria-label="커뮤 편집">✎</button>`:""}<span class="pill">${esc(m.status)}</span></div>`}).join("")||`<div class="empty">결과가 없어요.</div>`;
 }
 
@@ -1115,7 +1163,7 @@ function toData(file,m=800){return new Promise((ok,no)=>{
   r.onload=()=>{const im=new Image();im.onerror=no;im.onload=()=>{
     const s=Math.min(1,m/Math.max(im.width,im.height)),cv=document.createElement("canvas");
     cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);
-    cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);ok(cv.toDataURL("image/webp",.85))};im.src=r.result};
+    cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);ok(cv.toDataURL("image/webp",.8))};im.src=r.result};
   r.readAsDataURL(file)})}
 const split=v=>v.split(",").map(s=>s.trim()).filter(Boolean);
 function saveChar(c){
@@ -1138,30 +1186,36 @@ const ghTok=()=>{try{return sessionStorage.getItem("ghtok")||""}catch(_){return 
 async function ghApi(path,opt={}){
   let r;try{r=await fetch("https://api.github.com"+path,{...opt,headers:{"Accept":"application/vnd.github+json","Authorization":"Bearer "+ghTok(),"X-GitHub-Api-Version":"2022-11-28",...(opt.headers||{})}})}catch(_){throw new Error("인터넷 연결을 확인해 주세요.")}
   if(!r.ok){let m="";try{m=(await r.json()).message}catch(_){}
-    throw new Error(r.status===401?"토큰이 맞지 않거나 만료됐어요.":r.status===403?"이 토큰으로는 저장할 수 없어요. 토큰 권한을 확인해 주세요.":r.status===404?"저장소나 파일을 찾지 못했어요. 사용자·저장소 이름을 확인해 주세요.":(r.status===409||r.status===422)?"다른 곳에서 먼저 바뀌었어요. 새로고침한 뒤 다시 시도해 주세요.":(m||("오류 "+r.status)))}
+    throw new Error(r.status===413?"파일이 너무 커서 GitHub가 받지 않아요. 관리자 페이지의 용량 관리에서 이미지 용량을 줄여 주세요.":r.status===401?"토큰이 맞지 않거나 만료됐어요.":r.status===403?"이 토큰으로는 저장할 수 없어요. 토큰 권한을 확인해 주세요.":r.status===404?"저장소나 파일을 찾지 못했어요. 사용자·저장소 이름을 확인해 주세요.":(r.status===409||r.status===422)?"다른 곳에서 먼저 바뀌었어요. 새로고침한 뒤 다시 시도해 주세요.":(m||("오류 "+r.status)))}
   return r}
 async function ghVerify(){const g=gh();if(!g.owner||!g.repo||!ghTok())return false;const j=await (await ghApi(`/repos/${g.owner}/${g.repo}`)).json();return !!(j.permissions&&j.permissions.push)}
 const b64=s=>{const b=new TextEncoder().encode(s);let bin="";for(let i=0;i<b.length;i+=32768)bin+=String.fromCharCode.apply(null,b.subarray(i,i+32768));return btoa(bin)};
 async function ghSave(html){const g=gh(),base=`/repos/${g.owner}/${g.repo}/contents/${encodeURI(g.path)}`;
   const meta=await (await ghApi(base+`?ref=${encodeURIComponent(g.branch)}`,{headers:{"Accept":"application/vnd.github.object+json"}})).json();
   await ghApi(base,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"관리자 페이지에서 수정",content:b64(html),sha:meta.sha,branch:g.branch})})}
-async function commit(next){
-  toast("저장 중…");
+const MAXB=(window.claude&&window.claude.use)?15.5e6:40e6;
+function buildHtml(){
   const k=document.documentElement.cloneNode(true);
   k.removeAttribute("style");k.removeAttribute("data-theme");
   k.querySelectorAll("script:not([data-keep]),style:not([data-keep])").forEach(e=>e.remove());
-  ["view","sel","brand"].forEach(i=>{k.querySelector("#"+i).innerHTML=""});const sx=k.querySelector("#stars");if(sx)sx.remove();const px=k.querySelector("#planets");if(px)px.remove();const ab=k.querySelector("#admbar");if(ab)ab.remove();
+  ["view","sel","brand"].forEach(i=>{k.querySelector("#"+i).innerHTML=""});const sx=k.querySelector("#stars");if(sx)sx.remove();const px=k.querySelector("#planets");if(px)px.remove();const ab=k.querySelector("#admbar");if(ab)ab.remove();const tb=k.querySelector("#topbtn");if(tb)tb.remove();
   k.querySelectorAll("[aria-current]").forEach(e=>e.removeAttribute("aria-current"));
   const t=k.querySelector("#toast");t.removeAttribute("style");t.textContent="";
   k.querySelector("#data").textContent=JSON.stringify(D).replace(/</g,"\\u003c");
   const html="<!DOCTYPE html>\n"+k.outerHTML;
-  if(html.length>15e6){toast("용량이 너무 커요. 이미지를 줄여 주세요.");return}
+  return html}
+async function commit(next){
+  toast("저장 중…");
+  const html=buildHtml();
+  const size=new Blob([html]).size;
+  if(size>MAXB){toast(`용량이 너무 커요 (현재 ${(size/1e6).toFixed(1)}MB / 최대 ${(MAXB/1e6).toFixed(0)}MB). 관리자 페이지의 "용량 관리"에서 이미지 용량을 줄여 주세요.`);return}
   try{await ghSave(html);editing=null;location.hash=next;render();toast("저장했어요. 사이트에 반영되기까지 1~2분 걸려요.")}
   catch(e){toast("저장하지 못했어요: "+(e&&e.message||"알 수 없는 오류"))}
 }
 function render(){
   admBar();
   const r=route();
+  topBtn(r.p);
   $("brand").textContent=D.site.title;
   document.querySelectorAll("#top a").forEach(a=>{if(a.dataset.p===r.p)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   view.onclick=null;sel.innerHTML="";nav=null;
