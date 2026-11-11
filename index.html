@@ -1488,6 +1488,35 @@ function render(){
   scrollTo(0,0);
 }
 addEventListener("hashchange",()=>{editing=null;render()});
+/* 드래그·밀기로 탭 이동 */
+(function(){
+  const ORDER=["home","owner","characters","community","trpg"];
+  let sd=0;
+  addEventListener("hashchange",()=>{const d=sd;sd=0;if(!d)return;const v=$("view");
+    try{if(v&&v.animate&&!matchMedia("(prefers-reduced-motion:reduce)").matches)v.animate([{opacity:0,transform:`translateX(${d*36}px)`},{opacity:1,transform:"none"}],{duration:260,easing:"ease-out"})}catch(_){}});
+  const cur=()=>{const h=location.hash.slice(1)||"home";return ORDER.indexOf(h)};
+  const blocked=el=>{
+    if(!el||!el.closest)return true;
+    if(el.closest("input,textarea,select,button,label,audio,video,iframe,[contenteditable],.bgp,.lb,dialog"))return true;
+    if(document.querySelector(".lb,dialog[open]"))return true;
+    if(typeof canEdit!=="undefined"&&canEdit)return true;
+    for(let e=el;e&&e!==document.body;e=e.parentElement){const o=getComputedStyle(e).overflowX;if((o==="auto"||o==="scroll")&&e.scrollWidth>e.clientWidth+2)return true}
+    return false};
+  let st=null;
+  const begin=(x,y,el,kind)=>{st=null;if(cur()<0||blocked(el))return;st={x,y,t:Date.now(),kind}};
+  const end=(x,y)=>{const s=st;st=null;if(!s)return;
+    const dx=x-s.x,dy=y-s.y,ax=Math.abs(dx),ay=Math.abs(dy);
+    if(ax<(s.kind==="m"?120:70)||ax<ay*1.8||Date.now()-s.t>1500)return;
+    const i=cur(),j=i+(dx<0?1:-1);if(j<0||j>=ORDER.length)return;
+    try{const g=getSelection();if(g)g.removeAllRanges()}catch(_){}
+    sd=dx<0?1:-1;location.hash="#"+ORDER[j]};
+  addEventListener("touchstart",e=>{if(e.touches.length!==1){st=null;return}const t=e.touches[0];begin(t.clientX,t.clientY,e.target,"t")},{passive:true});
+  addEventListener("touchend",e=>{const t=e.changedTouches[0];if(t)end(t.clientX,t.clientY)},{passive:true});
+  addEventListener("touchcancel",()=>{st=null},{passive:true});
+  addEventListener("mousedown",e=>{if(e.button!==0)return;begin(e.clientX,e.clientY,e.target,"m")});
+  addEventListener("mouseup",e=>{end(e.clientX,e.clientY)});
+  addEventListener("dragstart",e=>{if(st&&st.kind==="m")e.preventDefault()});
+})();
 $("mode").onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;root.dataset.theme=dark?"light":"dark";try{sessionStorage.setItem("theme",root.dataset.theme)}catch(_){}};
 render();
 (async()=>{
