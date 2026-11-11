@@ -213,7 +213,14 @@ a.rr{text-decoration:none;color:var(--ink);border-radius:10px;padding-left:6px;p
 .bgp button[hidden]{display:none}
 .bgp .bp-pl{width:28px;height:28px;background:var(--accent);color:var(--on-accent,#1D2A5C)}
 .bgp button:focus-visible,.bgp input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.bp-t{font-size:12px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px 0 6px}
+.bp-t{font-size:12px;color:var(--muted);max-width:140px;overflow:hidden;white-space:nowrap;margin:0 4px 0 6px;display:block}
+.bp-t.mq{-webkit-mask-image:linear-gradient(90deg,transparent,#000 8px,#000 calc(100% - 8px),transparent);mask-image:linear-gradient(90deg,transparent,#000 8px,#000 calc(100% - 8px),transparent)}
+.bp-k{display:inline-flex}
+.bp-i{display:block;flex:none}
+.bp-t.mq .bp-i{padding-right:36px}
+.bp-t.mq .bp-k{animation:bpm var(--s,10s) linear infinite}
+@keyframes bpm{to{transform:translateX(calc(-1 * var(--w,0px)))}}
+@media (prefers-reduced-motion:reduce){.bp-t.mq .bp-k{animation:none}.bp-t{text-overflow:ellipsis}}
 .bgp.on .bp-t{color:var(--ink)}
 .bp-v{display:flex;align-items:center;gap:4px;color:var(--muted)}
 .bp-v input{width:58px;-webkit-appearance:none;appearance:none;height:16px;background:transparent;margin:0;--p:0%}
@@ -1369,32 +1376,38 @@ function bgYT(vid){BG.ytWant=vid;
       onError:()=>bgErr("이 영상은 외부에서 재생할 수 없어요.",true)}})};
   const s=document.createElement("script");s.src="https://www.youtube.com/iframe_api";
   s.onerror=()=>{BG.ytLoading=false;bgErr("유튜브를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.",false)};document.head.append(s)}
+function bgFit(){const e=$("bp-t");if(!e||!e.firstChild)return;
+  const k=e.firstChild;while(k.children.length>1)k.lastChild.remove();e.classList.remove("mq");
+  const i=k.firstChild;if(!e.clientWidth)return;
+  if(i.offsetWidth>e.clientWidth){e.classList.add("mq");const w=i.offsetWidth;k.append(i.cloneNode(true));k.style.setProperty("--w",w+"px");k.style.setProperty("--s",Math.max(6,w/32)+"s");e.style.setProperty("--w",w+"px");e.style.setProperty("--s",Math.max(6,w/32)+"s")}}
+function bgTitle(s){const e=$("bp-t");if(e.dataset.t===s)return;e.dataset.t=s;e.title=s;
+  e.innerHTML='<span class="bp-k"><span class="bp-i"></span></span>';e.firstChild.firstChild.textContent=s;bgFit()}
+addEventListener("resize",()=>bgFit());try{document.fonts&&document.fonts.ready.then(()=>{const e=$("bp-t");if(e)bgFit()})}catch(_){}
 function bgUI(){
   const tr=bgTr();let p=$("bgp");
   if(!tr.length){if(p)p.hidden=true;return}
   if(!p){p=document.createElement("div");p.id="bgp";p.className="bgp";
-    p.innerHTML=`<button type="button" id="bp-prev" class="bp-sk" aria-label="이전 곡">${BI.prev}</button><button type="button" id="bp-play" class="bp-pl" aria-label="재생"></button><button type="button" id="bp-next" class="bp-sk" aria-label="다음 곡">${BI.next}</button><span id="bp-t" class="bp-t"></span><label class="bp-v" title="볼륨">${BI.vol}<input id="bp-vol" type="range" min="0" max="100" aria-label="볼륨"></label>`;
+    p.innerHTML=`<button type="button" id="bp-play" class="bp-pl" aria-label="재생"></button><span id="bp-t" class="bp-t"></span><label class="bp-v" title="볼륨">${BI.vol}<input id="bp-vol" type="range" min="0" max="100" aria-label="볼륨"></label>`;
     const h=document.querySelector("header"),m=$("mode");h.insertBefore(p,m);
-    $("bp-play").onclick=()=>bgToggle();$("bp-prev").onclick=bgPrev;$("bp-next").onclick=()=>bgNext(false);
+    $("bp-play").onclick=()=>bgToggle();
     const v=$("bp-vol");v.value=Math.round(BG.vol*100);v.style.setProperty("--p",v.value+"%");
     v.oninput=()=>{v.style.setProperty("--p",v.value+"%");BG.vol=v.value/100;bgSave();if(BG.au)BG.au.volume=BG.vol;try{if(BG.ytReady)BG.yt.setVolume(+v.value)}catch(_){}}}
   const t=bgNow(),pl=BG.playing;p.hidden=false;p.classList.toggle("on",pl);
   $("bp-play").innerHTML=pl?BI.pause:BI.play;$("bp-play").setAttribute("aria-label",pl?"일시정지":"재생");
-  $("bp-t").textContent=t?(t.t||"제목 없음"):(tr[0].t||"BGM");
-  $("bp-prev").hidden=$("bp-next").hidden=tr.length<2}
+  bgTitle(t?(t.t||"제목 없음"):(tr[0].t||"BGM"));
+}
 function bgAuto(){if(BG.autoTried)return;BG.autoTried=true;
   const tr=bgTr().filter(x=>CAN_YT||x.k==="f");if(!tr.length||D.music.auto===false)return;
   bgPlay(tr[0].id,true)}
-function bgAdmin(){const tr=bgTr();
-  const row=(t,i)=>`<li data-tid="${esc(t.id)}"><span class="bg-n">${i+1}</span><span class="bg-nm">${esc(t.t||"제목 없음")}</span><em>${t.k==="y"?"YouTube":"파일"}</em><span class="bg-ed"><button type="button" data-pv="${esc(t.id)}" aria-label="들어보기">${BI.play}</button><button type="button" data-up="${esc(t.id)}" aria-label="위로">${BI.up}</button><button type="button" data-dn="${esc(t.id)}" aria-label="아래로">${BI.down}</button><button type="button" data-rn="${esc(t.id)}" aria-label="이름 바꾸기">${BI.edit}</button><button type="button" data-dl="${esc(t.id)}" aria-label="삭제">${BI.del}</button></span></li>`;
+function bgAdmin(){const t=bgTr()[0];
   return `<div class="card bgm-adm" style="max-width:640px"><h2>배경 음악</h2>
-    <p class="sub">사이트 맨 위의 작은 플레이어에서 재생돼요. 위에서부터 차례로 이어서 재생하고, 마지막 곡이 끝나면 처음으로 돌아가요.</p>
+    <p class="sub">사이트 맨 위의 작은 플레이어에서 재생되는 음악이에요. 음악은 하나만 등록할 수 있고, 새로 등록하면 기존 음악을 대신해요. 곡이 끝나면 처음부터 다시 재생돼요.</p>
     <label class="bg-auto"><input id="bg-auto" type="checkbox" ${D.music.auto===false?"":"checked"}> 사이트에 들어오면 자동으로 재생하기</label>
     <p class="sub">브라우저가 소리 자동 재생을 막는 경우에는 방문자가 화면을 처음 누르거나 키를 누를 때 시작돼요.</p>
-    ${tr.length?`<ol id="bg-list" class="bg-list">${tr.map(row).join("")}</ol>`:`<p class="sub">아직 음악이 없어요. 아래에서 추가해 보세요.</p>`}
-    <div id="bg-add"><div class="seg2" id="bg-mode"><button type="button" data-m="f" aria-pressed="true">파일 올리기</button><button type="button" data-m="y" aria-pressed="false">유튜브 링크</button></div>
-      <div id="bg-pf"><p class="sub">mp3, m4a, ogg, wav 파일을 올릴 수 있어요 (파일당 ${BGM_MAX/1e6}MB까지). 여러 곡을 한 번에 골라도 돼요.${CAN_YT?" 올린 파일은 사이트를 보는 누구나 내려받을 수 있으니, 직접 만든 곡이나 사용 허락을 받은 곡만 올려 주세요.":" 이 미리보기는 용량이 작아서 짧은 곡만 올릴 수 있어요."}</p><input id="bg-file" type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav,.aac,.flac" multiple></div>
-      <div id="bg-py" hidden><p class="sub">영상 하나의 주소를 붙여 넣으세요. 영상은 보이지 않고 소리만 나와요.${CAN_YT?"":" 유튜브 재생은 이 미리보기가 아닌 실제 사이트에서만 돼요."}</p><div class="f"><label>유튜브 주소<input id="bg-yt" type="text" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off"></label><label>제목 (비우면 자동으로 가져와요)<input id="bg-yt-t" type="text" autocomplete="off"></label></div><button type="button" class="btn pri" id="bg-yt-go">추가</button></div>
+    ${t?`<ul id="bg-list" class="bg-list"><li data-tid="${esc(t.id)}"><span class="bg-nm">${esc(t.t||"제목 없음")}</span><em>${t.k==="y"?"YouTube":"파일"}</em><span class="bg-ed"><button type="button" data-pv="${esc(t.id)}" aria-label="들어보기">${BI.play}</button><button type="button" data-rn="${esc(t.id)}" aria-label="이름 바꾸기">${BI.edit}</button><button type="button" data-dl="${esc(t.id)}" aria-label="삭제">${BI.del}</button></span></li></ul>`:`<p class="sub">아직 등록된 음악이 없어요. 아래에서 등록해 보세요.</p>`}
+    <div id="bg-add"><strong style="font-size:13px">${t?"다른 음악으로 바꾸기":"음악 등록하기"}</strong><div class="seg2" id="bg-mode"><button type="button" data-m="f" aria-pressed="true">파일 올리기</button><button type="button" data-m="y" aria-pressed="false">유튜브 링크</button></div>
+      <div id="bg-pf"><p class="sub">mp3, m4a, ogg, wav 파일 하나를 올릴 수 있어요 (최대 ${BGM_MAX/1e6}MB).${CAN_YT?" 올린 파일은 사이트를 보는 누구나 내려받을 수 있으니, 직접 만든 곡이나 사용 허락을 받은 곡만 올려 주세요.":" 이 미리보기는 용량이 작아서 짧은 곡만 올릴 수 있어요."}</p><input id="bg-file" type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav,.aac,.flac"></div>
+      <div id="bg-py" hidden><p class="sub">영상 하나의 주소를 붙여 넣으세요. 영상은 보이지 않고 소리만 나와요.${CAN_YT?"":" 유튜브 재생은 이 미리보기가 아닌 실제 사이트에서만 돼요."}</p><div class="f"><label>유튜브 주소<input id="bg-yt" type="text" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off"></label><label>제목 (비우면 자동으로 가져와요)<input id="bg-yt-t" type="text" autocomplete="off"></label></div><button type="button" class="btn pri" id="bg-yt-go">등록</button></div>
       <p class="sub" id="bg-msg" style="min-height:1.4em;margin:8px 0 0"></p></div></div>`}
 function bgMsg(m,bad){const e=$("bg-msg");if(e){e.textContent=m;e.style.color=bad?"#d33":""}}
 function bgYtId(u){u=String(u||"").trim();const ok=/^[A-Za-z0-9_-]{11}$/;if(ok.test(u))return u;
@@ -1404,7 +1417,7 @@ function bgYtId(u){u=String(u||"").trim();const ok=/^[A-Za-z0-9_-]{11}$/;if(ok.t
   return ""}
 const BG_MIME={mp3:"audio/mpeg",m4a:"audio/mp4",aac:"audio/aac",ogg:"audio/ogg",oga:"audio/ogg",opus:"audio/ogg",wav:"audio/wav",webm:"audio/webm",flac:"audio/flac"};
 async function bgAddFiles(files){const add=[];
-  for(const f of files){const ext=(f.name.split(".").pop()||"").toLowerCase(),mime=BG_MIME[ext]||(/^audio\//.test(f.type)?f.type:"");
+  for(const f of files.slice(0,1)){const ext=(f.name.split(".").pop()||"").toLowerCase(),mime=BG_MIME[ext]||(/^audio\//.test(f.type)?f.type:"");
     if(!mime){bgMsg(`지원하지 않는 형식이에요 (${f.name}). mp3, m4a, ogg, wav 파일을 올려 주세요.`,1);return}
     if(f.size>BGM_MAX){bgMsg(`${f.name} 파일이 너무 커요 (${(f.size/1e6).toFixed(1)}MB, 최대 ${BGM_MAX/1e6}MB). 더 낮은 음질(128kbps mp3 등)로 줄여서 올려 주세요.`,1);return}
     bgMsg(`읽는 중… ${f.name}`);
@@ -1412,22 +1425,19 @@ async function bgAddFiles(files){const add=[];
     if(!u){bgMsg(`${f.name} 파일을 읽지 못했어요.`,1);return}
     add.push({id:bgUid(),k:"f",t:f.name.replace(/\.[^.]+$/,""),src:u})}
   if(!add.length)return;
-  if(!CAN_YT){const need=add.reduce((s,t)=>s+t.src.length,0)+new Blob([buildHtml()]).size;if(need>MAXB){bgMsg(`미리보기의 용량 한도(약 ${(MAXB/1e6).toFixed(0)}MB)를 넘어요. 실제 사이트에서는 더 큰 파일도 올릴 수 있어요.`,1);return}}
-  D.music.tracks.push(...add);commit("admin")}
+  if(!CAN_YT){const old=bgTr().reduce((s,t)=>s+(t.src?t.src.length:0),0);const need=add.reduce((s,t)=>s+t.src.length,0)+new Blob([buildHtml()]).size-old;if(need>MAXB){bgMsg(`미리보기의 용량 한도(약 ${(MAXB/1e6).toFixed(0)}MB)를 넘어요. 실제 사이트에서는 더 큰 파일도 올릴 수 있어요.`,1);return}}
+  bgStop();D.music.tracks=[add[0]];BG.cur=null;BG.kind="";BG.userPaused=false;commit("admin");bgPlay(add[0].id)}
 async function bgAddYt(){const id=bgYtId($("bg-yt").value);
   if(!id){bgMsg("유튜브 주소를 알아보지 못했어요. 영상 하나의 주소를 붙여 넣어 주세요. (재생목록 주소는 영상을 하나씩 넣어 주세요)",1);return}
   let title=$("bg-yt-t").value.trim();
   if(!title){bgMsg("제목을 가져오는 중…");try{const c=new AbortController(),to=setTimeout(()=>c.abort(),4000),r=await fetch("https://www.youtube.com/oembed?format=json&url="+encodeURIComponent("https://www.youtube.com/watch?v="+id),{signal:c.signal});clearTimeout(to);if(r.ok)title=(await r.json()).title||""}catch(_){}}
-  D.music.tracks.push({id:bgUid(),k:"y",t:title||"YouTube 영상",vid:id});commit("admin")}
+  const nt={id:bgUid(),k:"y",t:title||"YouTube 영상",vid:id};bgStop();D.music.tracks=[nt];BG.cur=null;BG.kind="";BG.userPaused=false;commit("admin");bgPlay(nt.id)}
 function bgAdminBind(){const c=document.querySelector(".bgm-adm");if(!c)return;
   $("bg-auto").onchange=e=>{D.music.auto=e.target.checked;commit("admin")};
   $("bg-mode").querySelectorAll("button").forEach(b=>b.onclick=()=>{const m=b.dataset.m;$("bg-mode").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("bg-pf").hidden=m!=="f";$("bg-py").hidden=m!=="y"});
   $("bg-file").onchange=e=>{const fs=[...e.target.files];e.target.value="";if(fs.length)bgAddFiles(fs)};
   $("bg-yt-go").onclick=bgAddYt;
-  const mv=(id,d)=>{const a=D.music.tracks,i=a.findIndex(t=>t.id===id),j=i+d;if(i<0||j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];commit("admin")};
   c.querySelectorAll("[data-pv]").forEach(b=>b.onclick=()=>{BG.userPaused=false;bgPlay(b.dataset.pv)});
-  c.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>mv(b.dataset.up,-1));
-  c.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>mv(b.dataset.dn,1));
   c.querySelectorAll("[data-dl]").forEach(b=>b.onclick=()=>{
     if(b.dataset.arm!=="1"){b.dataset.arm="1";b.classList.add("arm");b.innerHTML="정말?";setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.classList.remove("arm");b.innerHTML=BI.del}},3000);return}
     const id=b.dataset.dl;if(BG.cur===id){bgStop();BG.cur=null;BG.kind=""}D.music.tracks=D.music.tracks.filter(t=>t.id!==id);commit("admin")});
