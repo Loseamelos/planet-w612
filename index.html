@@ -211,7 +211,7 @@ a.rr{text-decoration:none;color:var(--ink);border-radius:10px;padding-left:6px;p
 .bgp[hidden]{display:none}
 .bgp button{border:0;background:none;color:var(--ink);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;padding:0;flex:none}
 .bgp button[hidden]{display:none}
-.bgp .bp-pl{width:28px;height:28px;background:var(--accent);color:var(--on-accent,#1D2A5C)}
+.bgp .bp-pl{width:28px;height:28px;background:#B4CDFF;color:#1D2A5C}
 .bgp button:focus-visible,.bgp input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .bp-t{font-size:12px;color:var(--muted);max-width:140px;overflow:hidden;white-space:nowrap;margin:0 4px 0 6px;display:block}
 .bp-t.mq{-webkit-mask-image:linear-gradient(90deg,transparent,#000 8px,#000 calc(100% - 8px),transparent);mask-image:linear-gradient(90deg,transparent,#000 8px,#000 calc(100% - 8px),transparent)}
@@ -301,6 +301,9 @@ dialog.cald::backdrop{background:rgba(10,8,25,.55)}
 .cald textarea{min-height:96px;resize:vertical}
 .cald .cmsg{min-height:1.4em;margin:0 0 8px;font-size:12px;color:#d33}
 .cald .btn.dng{color:#d33}
+.cald .cdr{margin:-8px 0 12px;font-size:12px;color:var(--muted)}
+.cald [hidden]{display:none!important}
+.cald select{width:100%;font:inherit}
 .cald label.cfh{display:flex;flex-direction:row;gap:8px;align-items:center;font-weight:400;font-size:13px;margin-top:12px}
 .cald label.cfh input{width:auto;margin:0;flex:none}
 .cald .cfc>span{display:block;font-size:13px;margin-bottom:6px}
@@ -395,7 +398,14 @@ const CAL_DOW=["일","월","화","수","목","금","토"];
 const calUid=()=>"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const calKey=(y,m,d)=>`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 const calFmt=k=>{const [y,m,d]=String(k).split("-").map(Number);return `${y}년 ${m}월 ${d}일 (${CAL_DOW[new Date(y,m-1,d).getDay()]})`};
-const calEv=k=>L(D.cal.events).filter(e=>e.d===k).sort((a,b)=>(a.s||"").localeCompare(b.s||""));
+function calMatch(e,k){if(!e.d||k<e.d)return false;if(e.u&&k>e.u)return false;if(L(e.x).includes(k))return false;
+  const r=e.r;if(!r)return k===e.d;if(r==="d")return true;
+  const a=e.d.split("-").map(Number),b=k.split("-").map(Number),n=Math.round((Date.UTC(b[0],b[1]-1,b[2])-Date.UTC(a[0],a[1]-1,a[2]))/864e5);
+  if(r==="w")return n%7===0;if(r==="b")return n%14===0;if(r==="m")return a[2]===b[2];if(r==="y")return a[1]===b[1]&&a[2]===b[2];return k===e.d}
+const CAL_REP=[["","반복 안 함"],["d","매일"],["w","매주"],["b","2주마다"],["m","매월"],["y","매년"]];
+const calRepText=e=>{if(!e.r)return"";const p=String(e.d).split("-").map(Number),w=CAL_DOW[new Date(p[0],p[1]-1,p[2]).getDay()];
+  const s={d:"매일",w:`매주 ${w}요일`,b:`2주마다 ${w}요일`,m:`매월 ${p[2]}일`,y:`매년 ${p[1]}월 ${p[2]}일`}[e.r]||"";return s+(e.u?` · ${calFmt(e.u)}까지`:"")};
+const calEv=k=>L(D.cal.events).filter(e=>calMatch(e,k)).sort((a,b)=>(a.s||"").localeCompare(b.s||""));
 const CAL_COLS=[["기본",""],["파랑","#7e9ff0"],["보라","#a58df0"],["분홍","#e895c8"],["빨강","#ef8a80"],["주황","#f2a65e"],["노랑","#e8c84f"],["초록","#6fcf97"],["청록","#52c7c7"]];
 const calCol=c=>CAL_COLS.some(x=>x[1]&&x[1]===c)?c:"";
 const calSty=c=>calCol(c)?` style="--c:${calCol(c)}"`:"";
@@ -413,7 +423,7 @@ function calHolYear(y){if(calHolMap[y])return calHolMap[y];const o={};
   else{KRH_FIXED.forEach(s=>{o[y+"-"+s.slice(0,5)]=s.slice(6)});
     KRH_SUB.forEach(s=>{const dt=new Date(y,+s.slice(0,2)-1,+s.slice(3)),w=dt.getDay();if(w===0||w===6){let n=new Date(dt);do{n.setDate(n.getDate()+(n.getDay()===6?2:1))}while(o[calKey(n.getFullYear(),n.getMonth(),n.getDate())]);o[calKey(n.getFullYear(),n.getMonth(),n.getDate())]="대체공휴일"}})}
   return calHolMap[y]=o}
-const calHolName=k=>{const n=calHolYear(+String(k).slice(0,4))[k];if(n)return n;return L(D.cal.events).some(e=>e.d===k&&e.h)?"휴일":""};
+const calHolName=k=>{const n=calHolYear(+String(k).slice(0,4))[k];if(n)return n;return L(D.cal.events).some(e=>e.h&&calMatch(e,k))?"휴일":""};
 const calTime=e=>e.s?(e.e?`${e.s} ~ ${e.e}`:e.s):"";
 function calCard(){
   const n=new Date(),b=new Date(n.getFullYear(),n.getMonth()+calOff,1),y=b.getFullYear(),m=b.getMonth(),first=b.getDay(),days=new Date(y,m+1,0).getDate(),tk=calKey(n.getFullYear(),n.getMonth(),n.getDate());
@@ -426,18 +436,21 @@ function calRedraw(){const h=document.querySelector(".hcal");if(h)h.outerHTML=ca
 function calDlg(html){let d=$("cald");if(!d){d=document.createElement("dialog");d.id="cald";d.className="cald";document.body.append(d);
     d.addEventListener("click",e=>{if(e.target===d)d.close()})}
   d.innerHTML=html;if(!d.open){try{d.showModal()}catch(_){d.setAttribute("open","")}}return d}
-function calView(e){
-  const d=calDlg(`<p class="cdd"><i class="cdot"${calSty(e.c)}></i>${esc(calFmt(e.d))}</p><h3>${esc(e.t)}</h3><p class="cdt">${esc(calTime(e)||"종일")}</p><div class="cdm${e.m?"":" no"}">${e.m?esc(e.m):"상세 내용이 없어요."}</div><div class="cda"><button type="button" class="btn" id="cal-x">닫기</button></div>`);
+function calView(e,od){
+  const d=calDlg(`<p class="cdd"><i class="cdot"${calSty(e.c)}></i>${esc(calFmt(od||e.d))}</p><h3>${esc(e.t)}</h3><p class="cdt">${esc(calTime(e)||"종일")}</p>${e.r?`<p class="cdr">↻ ${esc(calRepText(e))}</p>`:""}<div class="cdm${e.m?"":" no"}">${e.m?esc(e.m):"상세 내용이 없어요."}</div><div class="cda"><button type="button" class="btn" id="cal-x">닫기</button></div>`);
   $("cal-x").onclick=()=>d.close();$("cal-x").focus()}
 function calForm(e,date){
   const nw=!e;e=e||{id:calUid(),d:date,s:"",e:"",t:"",m:"",c:""};let colv=calCol(e.c);
-  const d=calDlg(`<h3>${nw?"일정 추가":"일정 수정"}</h3><div class="f"><label>날짜<input id="cf-d" type="date" value="${esc(e.d)}"></label><div class="r2"><label>시작 시간 (선택)<input id="cf-s" type="time" value="${esc(e.s||"")}"></label><label>끝나는 시간 (선택)<input id="cf-e" type="time" value="${esc(e.e||"")}"></label></div><label>일정 이름<input id="cf-t" type="text" maxlength="80" value="${esc(e.t)}" autocomplete="off"></label><label>상세 내용 (선택)<textarea id="cf-m">${esc(e.m||"")}</textarea></label><div class="cfc"><span>색상</span><div class="cfs" role="radiogroup" aria-label="일정 색상">${calSw(colv)}</div></div><label class="cfh"><input type="checkbox" id="cf-h"${e.h?" checked":""}> 휴일로 표시 (날짜가 분홍색으로 보여요)</label></div><p class="cmsg" id="cf-msg"></p><div class="cda">${nw?"":'<button type="button" class="btn dng" id="cf-del">삭제</button>'}<button type="button" class="btn" id="cf-x">취소</button><button type="button" class="btn pri" id="cf-ok">저장</button></div>`);
+  const d=calDlg(`<h3>${nw?"일정 추가":"일정 수정"}</h3><div class="f"><label>날짜 (반복하면 시작하는 날)<input id="cf-d" type="date" value="${esc(e.d)}"></label><div class="r2"><label>시작 시간 (선택)<input id="cf-s" type="time" value="${esc(e.s||"")}"></label><label>끝나는 시간 (선택)<input id="cf-e" type="time" value="${esc(e.e||"")}"></label></div><label>반복<select id="cf-r">${CAL_REP.map(([v,n])=>`<option value="${v}"${(e.r||"")===v?" selected":""}>${n}</option>`).join("")}</select></label><label id="cf-ul"${e.r?"":" hidden"}>반복 끝나는 날 (선택, 비우면 계속 반복)<input id="cf-u" type="date" value="${esc(e.u||"")}"></label><label>일정 이름<input id="cf-t" type="text" maxlength="80" value="${esc(e.t)}" autocomplete="off"></label><label>상세 내용 (선택)<textarea id="cf-m">${esc(e.m||"")}</textarea></label><div class="cfc"><span>색상</span><div class="cfs" role="radiogroup" aria-label="일정 색상">${calSw(colv)}</div></div><label class="cfh"><input type="checkbox" id="cf-h"${e.h?" checked":""}> 휴일로 표시 (날짜가 분홍색으로 보여요)</label></div><p class="cmsg" id="cf-msg"></p><div class="cda">${nw?"":`<button type="button" class="btn dng" id="cf-del">${e.r?"전체 삭제":"삭제"}</button>`}${!nw&&e.r&&date?'<button type="button" class="btn" id="cf-skip">이 날만 제외</button>':""}<button type="button" class="btn" id="cf-x">취소</button><button type="button" class="btn pri" id="cf-ok">저장</button></div>`);
   $("cf-x").onclick=()=>d.close();
+  $("cf-r").onchange=()=>{$("cf-ul").hidden=!$("cf-r").value};
+  const sk=$("cf-skip");if(sk)sk.onclick=()=>{e.x=[...L(e.x),date];d.close();commit("home")};
   d.querySelectorAll(".cfs button").forEach(b=>b.onclick=()=>{colv=b.dataset.c;d.querySelectorAll(".cfs button").forEach(x=>x.setAttribute("aria-checked",x===b))});
-  const ok=()=>{const v={id:e.id,d:$("cf-d").value,s:$("cf-s").value,e:$("cf-e").value,t:$("cf-t").value.trim(),m:$("cf-m").value.trim(),c:colv,h:$("cf-h").checked},msg=$("cf-msg");
+  const ok=()=>{const v={id:e.id,d:$("cf-d").value,s:$("cf-s").value,e:$("cf-e").value,t:$("cf-t").value.trim(),m:$("cf-m").value.trim(),c:colv,h:$("cf-h").checked,r:$("cf-r").value,u:$("cf-r").value?$("cf-u").value:"",x:L(e.x)},msg=$("cf-msg");
     if(!v.d){msg.textContent="날짜를 골라 주세요.";return}
     if(!v.t){msg.textContent="일정 이름을 적어 주세요.";$("cf-t").focus();return}
     if(v.e&&!v.s){msg.textContent="끝나는 시간만 넣을 수 없어요. 시작 시간도 넣어 주세요.";return}
+    if(v.u&&v.u<v.d){msg.textContent="반복 끝나는 날이 시작하는 날보다 빨라요.";return}
     if(v.s&&v.e&&v.e<v.s){msg.textContent="끝나는 시간이 시작 시간보다 빨라요.";return}
     const a=L(D.cal.events).filter(x=>x.id!==v.id);a.push(v);D.cal.events=a;
     const p=v.d.split("-");calOff=(+p[0]-new Date().getFullYear())*12+(+p[1]-1-new Date().getMonth());
@@ -452,7 +465,7 @@ addEventListener("click",ev=>{const t=ev.target;if(!t||!t.closest)return;
   if(nav){const v=nav.dataset.cal;if(v==="add"){const n=new Date(),b=new Date(n.getFullYear(),n.getMonth()+calOff,1),k=calOff===0?calKey(n.getFullYear(),n.getMonth(),n.getDate()):calKey(b.getFullYear(),b.getMonth(),1);calForm(null,k)}
     else{calOff=v==="0"?0:calOff+ +v;calRedraw()}return}
   const ce=t.closest(".ce");
-  if(ce){const x=L(D.cal.events).find(q=>q.id===ce.dataset.ev);if(x){if(canEdit)calForm(x);else calView(x)}return}
+  if(ce){const x=L(D.cal.events).find(q=>q.id===ce.dataset.ev);if(x){const od=ce.closest(".cd")?ce.closest(".cd").dataset.date:x.d;if(canEdit)calForm(x,od);else calView(x,od)}return}
   const cd=t.closest(".hcal .cd.ced");if(cd&&canEdit&&!editing)calForm(null,cd.dataset.date)});
 function renderHome(){
   setAccent(D.site.color);
