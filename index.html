@@ -403,6 +403,21 @@ a.por:hover .pim{box-shadow:0 0 0 3px var(--pc,var(--accent)),0 22px 40px -14px 
 .rth .rthb{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}.rth .rthb .pv{width:96px;height:44px;border-radius:10px;border:1px dashed var(--line);display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--muted);background:var(--bg)}.rth .rthb .pv img{width:100%;height:100%;object-fit:cover}
 .mb3{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0}.mb3 input,.mb3 textarea{margin:0}.mb3 .wide{grid-column:1/-1}
 @media (max-width:560px){.mb3{grid-template-columns:1fr}}
+/* 프로필 항목 타이틀 한 줄 표시 */
+.pk{grid-template-columns:max-content 1fr}.pk span{white-space:nowrap;min-width:80px}
+.kv.kvn,.kv.kvn{grid-template-columns:max-content 1fr}.kv.kvn>span{white-space:nowrap;min-width:90px}
+/* 프로필 항목: 이름 위 · 값 아래 (D 타입) */
+.pkd{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 22px;margin:20px 0 0}
+.pkd .pkdi{min-width:0}.pkd .pkdi.w{grid-column:1/-1}
+.pkd .pkdl{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ac-text);margin-bottom:3px;white-space:nowrap}
+.pkd .pkdv{font-size:15px;font-weight:500;overflow-wrap:anywhere}
+.pkd .pkdc{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pkd .pkdc span{font-size:13px;font-weight:500;padding:2px 11px;border-radius:99px;background:var(--soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+@media (max-width:640px){.pkd{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* 오너캐 탭: 카드 박스 없이 */
+.card.oc{background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:0;padding:0;margin:22px 0 0}
+.card.oc+.card.oc{padding-top:20px;border-top:1px solid var(--line)}
+.card.oc .pkd{margin-top:12px}
 /* 별 모양 포인터 (마우스 환경에서만) */
 :root{--c-default:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23EEF3FF'/%3E%3Cstop offset='.5' stop-color='%23A9C3FB'/%3E%3Cstop offset='1' stop-color='%239A86E8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,auto;--c-pointer:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23EEF3FF'/%3E%3Cstop offset='.5' stop-color='%23A9C3FB'/%3E%3Cstop offset='1' stop-color='%239A86E8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.00 18.82,13.12 26.46,13.60 20.57,18.48 22.47,25.90 16.00,21.80 9.53,25.90 11.43,18.48 5.54,13.60 13.18,13.12' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.00 18.82,13.12 26.46,13.60 20.57,18.48 22.47,25.90 16.00,21.80 9.53,25.90 11.43,18.48 5.54,13.60 13.18,13.12' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M26.5 1.2999999999999998L27.68 4.32L30.7 5.5L27.68 6.68L26.5 9.7L25.32 6.68L22.3 5.5L25.32 4.32Z' fill='%23fff' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M5.5 23.5L6.34 25.66L8.5 26.5L6.34 27.34L5.5 29.5L4.66 27.34L2.5 26.5L4.66 25.66Z' fill='%23fff' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,pointer;--c-text:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 8V24' stroke='%23fff' stroke-width='5' stroke-linecap='round' stroke-opacity='.9'/%3E%3Cpath d='M16 8V24' stroke='%236384E0' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M16 0.5999999999999996L17.23 3.77L20.4 5L17.23 6.23L16 9.4L14.77 6.23L11.6 5L14.77 3.77Z' fill='%23B4CDFF' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M16 22.6L17.23 25.77L20.4 27L17.23 28.23L16 31.4L14.77 28.23L11.6 27L14.77 25.77Z' fill='%23C9B6FF' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,text;--c-no:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F4F5F8'/%3E%3Cstop offset='1' stop-color='%239AA1B5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M7 25L25 7' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M7 25L25 7' stroke='%23E5646E' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 16 16,not-allowed}
 @media (hover:hover) and (pointer:fine){
@@ -575,12 +590,14 @@ addEventListener("click",ev=>{const t=ev.target;if(!t||!t.closest)return;
   const ce=t.closest(".ce");
   if(ce){const x=L(D.cal.events).find(q=>q.id===ce.dataset.ev);if(x){const od=ce.closest(".cd")?ce.closest(".cd").dataset.date:x.d;if(canEdit)calForm(x,od);else calView(x,od)}return}
   const cd=t.closest(".hcal .cd.ced");if(cd&&canEdit&&!editing){const k=cd.dataset.date,o=calOffOf(k);if(o)calOffForm(o);else calForm(null,k)}});
+const pkHtml=a=>`<div class="pkd">${L(a).map(f=>{const v=String(f.v||""),pipe=v.includes("|"),wide=pipe||v.length>16;
+  return `<div class="pkdi${wide?" w":""}"><span class="pkdl">${esc(f.k)}</span>${pipe?`<div class="pkdc">${v.split("|").map(x=>x.trim()).filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:`<div class="pkdv">${esc(v)}</div>`}</div>`}).join("")}</div>`;
 function renderHome(){
   setAccent(D.site.color);
   const p=D.profile||{fields:[]};
   view.innerHTML=`<div class="homewrap"><section class="pf"><div><div class="ph">${p.img?`<img src="${esc(p.img)}" alt="">`:esc(p.emoji||"🌸")}</div>${String(p.credit||"").trim()?`<p class="cr">ⓒ ${esc(String(p.credit).replace(/^\s*[ⓒ©]\s*/,"").trim())}</p>`:""}</div><div>
     <p class="eyebrow">PROFILE</p><h1>${esc(p.nick||D.site.title)}</h1><p class="lead">${esc(p.tagline)}</p>
-    <div class="pk">${L(p.fields).map(f=>`<span>${esc(f.k)}</span><div>${esc(f.v)}</div>`).join("")}</div>
+    ${pkHtml(p.fields)}
     ${canEdit?`<p style="margin-top:22px"><button class="btn" id="es">✎ 프로필 편집</button></p>`:""}</div></section><div class="hdiv" role="separator" aria-hidden="true"><span></span><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" opacity=".6"><path d="M12 1c.7 6.3 4.7 10.3 11 11-6.3.7-10.3 4.7-11 11-.7-6.3-4.7-10.3-11-11C7.3 11.3 11.3 7.3 12 1z"/></svg><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1c.7 6.3 4.7 10.3 11 11-6.3.7-10.3 4.7-11 11-.7-6.3-4.7-10.3-11-11C7.3 11.3 11.3 7.3 12 1z"/></svg><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" opacity=".6"><path d="M12 1c.7 6.3 4.7 10.3 11 11-6.3.7-10.3 4.7-11 11-.7-6.3-4.7-10.3-11-11C7.3 11.3 11.3 7.3 12 1z"/></svg><span></span></div><h2 class="hct">Planner</h2>${calCard()}<p class="adml"><a href="#admin">Planet W612 | 별의 뒷편</a></p></div>`;
   const b=$("es");if(b)b.onclick=()=>{editing={site:true};render()};
 }
@@ -790,8 +807,8 @@ function renderOwner(){
   view.innerHTML=`<section class="cp"><div><div class="art">${o.img?`<img src="${esc(o.img)}" alt="${esc(o.name)}">`:"🌸"}</div>${cr?`<p class="cr">ⓒ ${esc(cr.replace(/^\s*[ⓒ©]\s*/,"").trim())}</p>`:""}</div><div>
     <p class="eyebrow">OWNER CHARACTER</p><h1>${esc(o.name||(D.profile&&D.profile.nick)||"오너캐")}</h1>${o.native?`<p class="nat">${esc(o.native)}</p>`:""}${o.title?`<p class="lead">${esc(o.title)}</p>`:""}
     ${canEdit?`<p><button class="btn" id="oedit" type="button">✎ 오너캐 편집</button></p>`:""}
-    ${L(o.fields).length?`<div class="card"><h2>기본 프로필</h2><div class="kv">${L(o.fields).map(f=>`<span>${esc(f.k)}</span><div>${esc(f.v)}</div>`).join("")}</div></div>`:""}
-    ${L(o.sections).map(s=>`<div class="card"><h2>${esc(s.title||"설정")}</h2><p style="margin:0;white-space:pre-line">${esc(s.body)}</p></div>`).join("")}
+    ${L(o.fields).length?`<div class="card oc"><h2>기본 프로필</h2>${pkHtml(o.fields)}</div>`:""}
+    ${L(o.sections).map(s=>`<div class="card oc"><h2>${esc(s.title||"설정")}</h2><p style="margin:0;white-space:pre-line">${esc(s.body)}</p></div>`).join("")}
   </div></section>
   ${L(o.gallery).length?`<h2>갤러리 · ${L(o.gallery).length}</h2><div class="rgal">${L(o.gallery).map(g=>`<figure class="gf"><img class="gz" src="${esc(g.src)}" alt="${esc(g.label||"")}" loading="lazy">${g.label?`<figcaption>${esc(g.label)}</figcaption>`:""}</figure>`).join("")}</div>`:""}`;
   wire();
