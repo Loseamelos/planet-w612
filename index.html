@@ -1776,9 +1776,14 @@ function bgAdminBind(){const c=document.querySelector(".bgm-adm");if(!c)return;
     const inp=w.querySelector("input"),go=()=>{t.t=inp.value.trim()||t.t;commit("admin")};w.querySelector("button").onclick=go;inp.onkeydown=e=>{if(e.key==="Enter")go()};inp.focus()})}
 setTimeout(bgAuto,200);
 
+let _wasGal=false,_wasChars=false,_galY=0;
 function render(){
   admBar();
   const r=route();
+  const _g=!editing&&r.p==="chars"&&!r.rd&&!r.rel&&!r.c;
+  if(_wasGal)_galY=window.scrollY||document.documentElement.scrollTop||0;
+  const _restore=_g&&_wasChars&&_galY>0;
+  _wasChars=r.p==="chars"&&!_g;_wasGal=_g;
   topBtn(r.p);
   bgUI();
   $("brand").textContent=D.site.title;
@@ -1803,7 +1808,8 @@ function render(){
   else if(r.p==="chars"&&!r.c)renderGallery();
   else if(r.c)renderChar(r.c);
   else view.innerHTML=`<div class="empty">아직 등록된 캐릭터가 없어요.</div>`;
-  scrollTo(0,0);
+  if(_restore){const y=_galY,go=()=>scrollTo({top:y,left:0,behavior:"instant"});go();requestAnimationFrame(go);setTimeout(go,150)}
+  else scrollTo(0,0);
 }
 addEventListener("hashchange",()=>{editing=null;render()});
 /* 드래그·밀기로 탭 이동 */
