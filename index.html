@@ -418,6 +418,11 @@ a.por:hover .pim{box-shadow:0 0 0 3px var(--pc,var(--accent)),0 22px 40px -14px 
 .card.oc{background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:0;padding:0;margin:22px 0 0}
 .card.oc+.card.oc{padding-top:20px;border-top:1px solid var(--line)}
 .card.oc .pkd{margin-top:12px}
+/* 모아서 게시 바 */
+.pubbar{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 72px);z-index:9;max-width:calc(100% - 24px);align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:8px 12px 8px 16px;box-shadow:0 12px 32px -12px color-mix(in srgb,var(--accent) 50%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:13px}
+.pubbar .pbt b{color:var(--ac-text);font-size:15px}
+.pubbar .btn{padding:6px 14px;font-size:13px}
+@media (max-width:640px){.pubbar{bottom:calc(env(safe-area-inset-bottom,0px) + 100px)}}
 /* 별 모양 포인터 (마우스 환경에서만) */
 :root{--c-default:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23EEF3FF'/%3E%3Cstop offset='.5' stop-color='%23A9C3FB'/%3E%3Cstop offset='1' stop-color='%239A86E8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,auto;--c-pointer:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23EEF3FF'/%3E%3Cstop offset='.5' stop-color='%23A9C3FB'/%3E%3Cstop offset='1' stop-color='%239A86E8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.00 18.82,13.12 26.46,13.60 20.57,18.48 22.47,25.90 16.00,21.80 9.53,25.90 11.43,18.48 5.54,13.60 13.18,13.12' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.00 18.82,13.12 26.46,13.60 20.57,18.48 22.47,25.90 16.00,21.80 9.53,25.90 11.43,18.48 5.54,13.60 13.18,13.12' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M26.5 1.2999999999999998L27.68 4.32L30.7 5.5L27.68 6.68L26.5 9.7L25.32 6.68L22.3 5.5L25.32 4.32Z' fill='%23fff' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M5.5 23.5L6.34 25.66L8.5 26.5L6.34 27.34L5.5 29.5L4.66 27.34L2.5 26.5L4.66 25.66Z' fill='%23fff' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,pointer;--c-text:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 8V24' stroke='%23fff' stroke-width='5' stroke-linecap='round' stroke-opacity='.9'/%3E%3Cpath d='M16 8V24' stroke='%236384E0' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M16 0.5999999999999996L17.23 3.77L20.4 5L17.23 6.23L16 9.4L14.77 6.23L11.6 5L14.77 3.77Z' fill='%23B4CDFF' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M16 22.6L17.23 25.77L20.4 27L17.23 28.23L16 31.4L14.77 28.23L11.6 27L14.77 25.77Z' fill='%23C9B6FF' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,text;--c-no:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F4F5F8'/%3E%3Cstop offset='1' stop-color='%239AA1B5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M7 25L25 7' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M7 25L25 7' stroke='%23E5646E' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 16 16,not-allowed}
 @media (hover:hover) and (pointer:fine){
@@ -706,7 +711,7 @@ function renderAdmin(){
       if(!ok){const n=(s.n||0)+1;lks({n,until:n>=5?Date.now()+Math.min(900,30*Math.pow(2,n-5))*1000:0});msg.textContent=n>=5?"비밀번호가 맞지 않아요. 잠시 후 다시 시도해 주세요.":`비밀번호가 맞지 않아요. (${n}/5)`;$("ad-pw").value="";return}
       lks({});
       adm=true;try{sessionStorage.setItem("adm","1")}catch(_){}canEdit=calcEdit();
-      if(ownerOk&&!D.admin.def&&(D.admin.iter||0)<ITER){try{await setPw(pw);commit("admin");return}catch(_){}}
+      if(ownerOk&&!D.admin.def&&(D.admin.iter||0)<ITER){try{await setPw(pw);commit("admin",{now:true});return}catch(_){}}
       render()};
     $("ad-ok").onclick=go;$("ad-pw").onkeydown=e=>{if(e.key==="Enter")go()};
     return}
@@ -729,6 +734,8 @@ function renderAdmin(){
       <div class="kv" style="margin:8px 0">${Object.entries(st).map(([k,v])=>`<span>${k}</span><div>${(v/1e6).toFixed(1)}MB</div>`).join("")}</div>
       <p class="sub">이미지를 올릴 때마다 용량이 늘어나요. 한도에 가까워지면 아래 버튼으로 이미 올린 이미지를 다시 압축해서 줄일 수 있어요. 화질이 조금 낮아지고 되돌릴 수 없으니, 필요할 때만 사용해 주세요.</p>
       <div class="actions"><button class="btn pri" id="im-1" type="button">이미지 용량 줄이기</button><button class="btn" id="im-2" type="button">더 강하게 줄이기</button></div><p class="sub" id="im-msg" style="min-height:1.4em;margin:8px 0 0"></p></div>`})()}
+    ${IS_GH?`<div class="card" style="max-width:560px"><h2>저장 방식</h2><label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="batch-on"${batchOn()?" checked":""} style="width:auto;margin:0"> 모아서 게시</label>
+      <p class="sub" style="margin:8px 0 0">켜 두면 수정할 때마다 바로 GitHub에 저장하지 않고 화면에만 먼저 반영해요. 여러 곳을 연달아 고친 뒤 화면 아래의 [지금 게시]를 한 번 누르면 한꺼번에 저장되고, 사이트 반영 대기도 한 번만 생겨요. 끄면 수정할 때마다 바로 저장해요.</p></div>`:""}
     ${bgAdmin()}
     <div class="card" style="max-width:460px"><h2>비밀번호 변경</h2><div class="f"><label>현재 비밀번호<input id="pw0" type="password" autocomplete="current-password"></label><label>새 비밀번호 (8자 이상)<input id="pw1" type="password" autocomplete="new-password"></label><label>새 비밀번호 확인<input id="pw2" type="password" autocomplete="new-password"></label></div>
       <p class="sub" id="pw-msg" style="color:#d33;min-height:1.4em;margin:0"></p><div class="actions"><button class="btn pri" id="pw-ok" type="button"${ownerOk?"":" disabled"}>비밀번호 변경</button></div>${ownerOk?"":`<p class="sub">GitHub 연결 후에 변경할 수 있어요.</p>`}<p class="sub" style="margin-top:12px">비밀번호는 암호화해서 저장돼요. 길고 추측하기 어려운 문장형 비밀번호(12자 이상)를 권장해요. 로그인을 5번 틀리면 잠시 입력이 잠겨요.</p></div>`;
@@ -736,7 +743,7 @@ function renderAdmin(){
     try{localStorage.setItem("ghcfg",JSON.stringify({owner:$("gh-o").value.trim(),repo:$("gh-r").value.trim()}))}catch(_){}
     if(t){try{sessionStorage.setItem("ghtok",t)}catch(_){}}
     m.textContent="확인 중…";
-    try{const ok=await ghVerify();ownerOk=ok;canEdit=calcEdit();if(ok){render()}else{m.style.color="#d33";m.textContent="이 토큰으로는 저장할 수 없어요. 토큰 권한을 확인해 주세요."}}
+    try{const ok=await ghVerify();ownerOk=ok;canEdit=calcEdit();if(ok){render();ghSync()}else{m.style.color="#d33";m.textContent="이 토큰으로는 저장할 수 없어요. 토큰 권한을 확인해 주세요."}}
     catch(e){ownerOk=false;canEdit=calcEdit();m.style.color="#d33";m.textContent=e.message}};
   $("gh-off").onclick=()=>{try{sessionStorage.removeItem("ghtok")}catch(_){}ownerOk=false;canEdit=false;render()};
   let imArm=0;
@@ -745,10 +752,11 @@ function renderAdmin(){
     if(imArm!==lv){imArm=lv;msg.style.color="";msg.textContent="한 번 더 누르면 시작해요. 화질이 조금 낮아지고 되돌릴 수 없어요.";setTimeout(()=>{if(imArm===lv){imArm=0;if(msg.isConnected)msg.textContent=""}},5000);return}
     imArm=0;$("im-1").disabled=$("im-2").disabled=true;
     try{const r=await shrinkAll(lv===2?.75:1,lv===2?.1:0,n=>{msg.style.color="";msg.textContent=`압축하는 중… ${n}`});
-      msg.textContent=`압축 완료: ${r.before.toFixed(1)}MB → ${r.after.toFixed(1)}MB. 저장하는 중…`;commit("admin")}
+      msg.textContent=`압축 완료: ${r.before.toFixed(1)}MB → ${r.after.toFixed(1)}MB. 저장하는 중…`;commit("admin",{now:true})}
     catch(e){msg.style.color="#d33";msg.textContent="압축하지 못했어요: "+(e&&e.message||"알 수 없는 오류");$("im-1").disabled=$("im-2").disabled=false}};
   if($("im-1")){$("im-1").onclick=()=>imGo(1);$("im-2").onclick=()=>imGo(2)}
   bgAdminBind();
+  {const bo=$("batch-on");if(bo)bo.onchange=()=>{setBatch(bo.checked);if(!bo.checked&&dirty>0)toast("게시하지 않은 변경이 있어요. 화면 아래 [지금 게시]로 저장해 주세요.")}}
   $("ad-out").onclick=()=>{adm=false;try{sessionStorage.removeItem("adm")}catch(_){}canEdit=false;editing=null;render()};
   $("pw-ok").onclick=async()=>{const msg=$("pw-msg");msg.style.color="#d33";
     const a=$("pw0").value,b=$("pw1").value,c=$("pw2").value;
@@ -757,7 +765,7 @@ function renderAdmin(){
     if(b!==c){msg.textContent="새 비밀번호 확인이 일치하지 않아요.";return}
     if(b===a){msg.textContent="현재 비밀번호와 다른 비밀번호를 입력해 주세요.";return}
     try{await setPw(b)}catch(_){msg.textContent="비밀번호를 저장하지 못했어요.";return}
-    commit("admin")};
+    commit("admin",{now:true})};
 }
 function wireRelEditor(){const f=$("f-rels");const row0=f.querySelector(".row");if(row0){rthPrev(row0);
     f.addEventListener("input",ev=>{const t=ev.target;if(t.classList.contains("r-c1")||t.classList.contains("r-c2")){t.dataset.set=1;rthPrev(row0)}})}
@@ -1612,17 +1620,85 @@ async function ghCommit(files,html,msg,prog){
   const g=gh(),R=`/repos/${g.owner}/${g.repo}`,P=o=>({method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)});
   const ref=await (await ghApi(`${R}/git/ref/heads/${g.branch}`)).json(),head=ref.object.sha;
   const base=(await (await ghApi(`${R}/git/commits/${head}`)).json()).tree.sha;
+  if(baseSha){const tt=await (await ghApi(`${R}/git/trees/${base}${g.path.includes("/")?"?recursive=1":""}`)).json();const en=(tt.tree||[]).find(x=>x.path===g.path);
+    if(en&&en.sha!==baseSha)throw new Error("다른 곳에서 먼저 저장된 내용이 있어서 덮어쓰지 않았어요. 새로고침한 뒤 다시 수정해 주세요.")}
   const blob=async b=>{for(let n=0;;n++){try{return (await (await ghApi(`${R}/git/blobs`,P({content:b,encoding:"base64"}))).json()).sha}catch(e){if(n>=2)throw e;await wait(1500*(n+1))}}};
   const tree=[];let done=0;const q=files.slice();
   await Promise.all(Array.from({length:4},async()=>{while(q.length){const f=q.shift();tree.push({path:f.path,mode:"100644",type:"blob",sha:await blob(f.b64)});prog(++done,files.length)}}));
-  tree.push({path:g.path,mode:"100644",type:"blob",sha:await blob(b64(html))});
+  const hsha=await blob(b64(html));tree.push({path:g.path,mode:"100644",type:"blob",sha:hsha});
   try{const t=await (await ghApi(`${R}/git/trees/${base}?recursive=1`)).json();
     if(!t.truncated){const used=new Set(html.match(/(?:images|audio)\/[0-9a-f]{24}\.(?:webp|jpg|png|gif|svg|mp3|m4a|ogg|wav|webm|aac|flac)/g)||[]);
       t.tree.forEach(x=>{if(x.type==="blob"&&IMGRE.test(x.path)&&!used.has(x.path))tree.push({path:x.path,mode:"100644",type:"blob",sha:null})})}}catch(_){}
   const nt=await (await ghApi(`${R}/git/trees`,P({base_tree:base,tree}))).json();
   const nc=await (await ghApi(`${R}/git/commits`,P({message:msg,tree:nt.sha,parents:[head]}))).json();
-  await ghApi(`${R}/git/refs/heads/${g.branch}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({sha:nc.sha})})}
-async function commit(next){
+  await ghApi(`${R}/git/refs/heads/${g.branch}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({sha:nc.sha})});return hsha}
+/* ── 빠른 저장: 최신 데이터 동기화 + 모아서 게시 ── */
+const batchOn=()=>{try{return localStorage.getItem("ghbatch")!=="0"}catch(_){return true}};
+const setBatch=v=>{try{localStorage.setItem("ghbatch",v?"1":"0")}catch(_){}};
+let baseSha="",pubSnap=JSON.stringify(D),dirty=0,publishing=false,syncing=false,draftFail=false;
+const idb=(mode,fn)=>new Promise((ok,no)=>{try{const q=indexedDB.open("w612",1);q.onupgradeneeded=()=>q.result.createObjectStore("kv");q.onerror=()=>no(q.error);
+  q.onsuccess=()=>{const db=q.result;try{const tx=db.transaction("kv",mode),r=fn(tx.objectStore("kv"));tx.oncomplete=()=>{db.close();ok(r&&r.result)};tx.onerror=tx.onabort=()=>{db.close();no(tx.error)}}catch(e){db.close();no(e)}}}catch(e){no(e)}});
+const draftKey=()=>{const g=gh();return "draft:"+g.owner+"/"+g.repo};
+const draftPut=async()=>{try{await idb("readwrite",s=>s.put({base:baseSha,json:JSON.stringify(D),n:dirty,t:Date.now()},draftKey()));draftFail=false}catch(_){draftFail=true}};
+const draftGet=async()=>{try{return await idb("readonly",s=>s.get(draftKey()))}catch(_){return null}};
+const draftDel=async()=>{try{await idb("readwrite",s=>s.delete(draftKey()))}catch(_){}};
+const replaceD=o=>{Object.keys(D).forEach(k=>delete D[k]);Object.assign(D,o)};
+async function ghLatest(){
+  const g=gh(),R=`/repos/${g.owner}/${g.repo}`;
+  const head=(await (await ghApi(`${R}/git/ref/heads/${g.branch}`)).json()).object.sha;
+  const tsha=(await (await ghApi(`${R}/git/commits/${head}`)).json()).tree.sha;
+  const tr=await (await ghApi(`${R}/git/trees/${tsha}${g.path.includes("/")?"?recursive=1":""}`)).json();
+  const ent=(tr.tree||[]).find(x=>x.path===g.path&&x.type==="blob");
+  if(!ent)throw new Error("index.html을 찾지 못했어요.");
+  const bl=await (await ghApi(`${R}/git/blobs/${ent.sha}`)).json();
+  const bin=atob(String(bl.content).replace(/\s/g,"")),by=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)by[i]=bin.charCodeAt(i);
+  const m=/<script type="application\/json" id="data"[^>]*>([\s\S]*?)<\/script>/.exec(new TextDecoder().decode(by));
+  if(!m)throw new Error("데이터를 읽지 못했어요.");
+  return {sha:ent.sha,data:JSON.parse(m[1])}}
+async function ghSync(){
+  if(!IS_GH||!ownerOk||syncing||dirty>0)return;
+  if(editing){setTimeout(ghSync,3000);return}
+  syncing=true;
+  try{
+    const f=await ghLatest(),dr=await draftGet();
+    if(editing){syncing=false;setTimeout(ghSync,3000);return}
+    baseSha=f.sha;pubSnap=JSON.stringify(f.data);
+    let next=f.data,msg="";
+    if(dr){
+      if(dr.base===baseSha&&dr.json){try{next=JSON.parse(dr.json);dirty=dr.n||1;msg=`게시하지 않은 변경 ${dirty}건을 복원했어요.`}catch(_){await draftDel()}}
+      else{await draftDel();msg="다른 곳에서 먼저 저장된 내용이 있어서, 게시하지 않은 임시 저장본은 쓰지 못했어요."}}
+    if(JSON.stringify(D)!==JSON.stringify(next)){replaceD(next);render()}else pubBarUpdate();
+    if(msg)toast(msg)
+  }catch(_){}
+  finally{syncing=false}}
+function pubBarUpdate(){let b=$("pubbar");
+  if(!(IS_GH&&canEdit&&dirty>0)){if(b)b.style.display="none";return}
+  if(!b){b=document.createElement("div");b.id="pubbar";b.className="pubbar";document.body.append(b);
+    b.addEventListener("click",ev=>{const t=ev.target.closest&&ev.target.closest("button");if(!t)return;
+      if(t.dataset.a==="pub")commitNow(undefined,true);
+      else if(t.dataset.a==="undo"){
+        if(!t.dataset.arm){t.dataset.arm="1";t.textContent="정말 취소할까요?";setTimeout(()=>{if(t.isConnected){delete t.dataset.arm;t.textContent="변경 취소"}},4000);return}
+        undoAll()}})}
+  b.style.display="flex";
+  b.innerHTML=`<span class="pbt">게시하지 않은 변경 <b>${dirty}</b>건</span><button class="btn pri" type="button" data-a="pub"${publishing?" disabled":""}>${publishing?"게시 중…":"지금 게시"}</button><button class="btn" type="button" data-a="undo"${publishing?" disabled":""}>변경 취소</button>`}
+function undoAll(){try{replaceD(JSON.parse(pubSnap))}catch(_){toast("되돌리지 못했어요. 새로고침해 주세요.");return}
+  dirty=0;draftDel();editing=null;render();toast("게시하지 않은 변경을 취소했어요.")}
+addEventListener("beforeunload",ev=>{if(dirty>0&&draftFail){ev.preventDefault();ev.returnValue=""}});
+/* 아직 배포 전인 새 이미지·음악: 관리자에게는 GitHub에서 직접 받아 보여주기 */
+const mediaFix=new Map();
+document.addEventListener("error",async ev=>{const e=ev.target;
+  if(!(IS_GH&&ownerOk&&e&&e.tagName&&/^(IMG|AUDIO|SOURCE)$/.test(e.tagName)))return;
+  const raw=e.getAttribute("src")||"";if(!IMGRE.test(raw)||e.dataset.fx)return;e.dataset.fx="1";
+  try{let u=mediaFix.get(raw);
+    if(!u){const g=gh(),r=await ghApi(`/repos/${g.owner}/${g.repo}/contents/${raw}?ref=${encodeURIComponent(g.branch)}`,{headers:{"Accept":"application/vnd.github.raw+json"}});u=URL.createObjectURL(await r.blob());mediaFix.set(raw,u)}
+    e.src=u;if(e.tagName==="SOURCE"&&e.parentElement&&e.parentElement.load)e.parentElement.load()}catch(_){}},true);
+async function commit(next,opt){
+  if(IS_GH&&ownerOk&&batchOn()&&!(opt&&opt.now)){
+    dirty++;editing=null;location.hash=next;render();draftPut();
+    toast("임시 저장했어요. 화면 아래 [지금 게시]를 누르면 한 번에 저장돼요.");return}
+  return commitNow(next)}
+async function commitNow(next,fromBar){
+  if(publishing)return;
   toast("저장 중…");
   if(!IS_GH){
     const html=buildHtml();const size=new Blob([html]).size;
@@ -1637,10 +1713,13 @@ async function commit(next){
     const html=buildHtml((k,v)=>{if(typeof v==="string"&&isMedia(v)){const e=extMap.get(v);if(e)return e.path}return v});
     const size=new Blob([html]).size;
     if(size>MAXB){toast(`파일이 너무 커요 (${(size/1e6).toFixed(1)}MB). 이미지 외의 내용이 너무 많아요.`);return}
-    await ghCommit(files,html,files.length?`관리자 페이지에서 수정 (이미지 ${files.length}장)`:"관리자 페이지에서 수정",(n,t)=>toast(`이미지 올리는 중… ${n}/${t}`));
+    publishing=true;pubBarUpdate();
+    baseSha=await ghCommit(files,html,files.length?`관리자 페이지에서 수정 (이미지 ${files.length}장)`:"관리자 페이지에서 수정",(n,t)=>toast(`이미지 올리는 중… ${n}/${t}`));
     files.forEach(f=>pushed.add(f.path));
-    editing=null;location.hash=next;render();toast("저장했어요. 사이트에 반영되기까지 1~2분 걸려요.")}
-  catch(e){toast("저장하지 못했어요: "+(e&&e.message||"알 수 없는 오류"))}
+    pubSnap=JSON.stringify(D);dirty=0;draftDel();publishing=false;
+    if(fromBar){pubBarUpdate();toast("게시했어요. 사이트에 반영되기까지 1~2분 걸려요.")}
+    else{editing=null;location.hash=next;render();toast("저장했어요. 사이트에 반영되기까지 1~2분 걸려요.")}}
+  catch(e){publishing=false;pubBarUpdate();toast("저장하지 못했어요: "+(e&&e.message||"알 수 없는 오류"))}
 }
 
 /* ===== BGM 플레이어 (상단 작은 플레이어 + 관리자 페이지 관리) ===== */
@@ -1778,7 +1857,7 @@ setTimeout(bgAuto,200);
 
 let _wasGal=false,_wasChars=false,_galY=0;
 function render(){
-  admBar();
+  admBar();pubBarUpdate();
   const r=route();
   const _g=!editing&&r.p==="chars"&&!r.rd&&!r.rel&&!r.c;
   if(_wasGal)_galY=window.scrollY||document.documentElement.scrollTop||0;
@@ -1847,6 +1926,7 @@ render();
   try{if(ghTok()){ownerOk=await ghVerify()}}catch(_){ownerOk=false}
   canEdit=calcEdit();
   if(!editing)render();
+  ghSync();
 })();
 
 (function(){
