@@ -448,6 +448,17 @@ a.por:hover .pim{box-shadow:0 0 0 3px var(--pc,var(--accent)),0 22px 40px -14px 
 .stl.today .snm,.stl.today .snl{display:block}
 .stk{display:flex;justify-content:space-between;font-family:Orbitron,ui-monospace,Menlo,Consolas,monospace;font-size:10px;color:var(--muted);margin-top:4px;opacity:.85}
 .sess+.hct{margin-top:54px}
+/* TRPG 기록 순서 편집 */
+.ordbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 12px;position:sticky;top:calc(var(--hh,64px) + 8px);z-index:5}
+.ordbar b{font-size:14px}.ordbar>span:nth-child(2){flex:1;min-width:200px;font-size:12px;color:var(--muted)}.ordbtn{display:flex;gap:8px}
+.ordi{align-items:center;background:transparent;transition:background .15s,box-shadow .15s}
+.ordi .lgh{flex:none;width:30px;height:38px;display:grid;place-items:center;border-radius:10px;color:var(--muted);font-size:18px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.ordi .lgh:hover{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--ac-text)}
+.ordi.drg{background:color-mix(in srgb,var(--accent) 12%,var(--panel));box-shadow:0 8px 22px -10px color-mix(in srgb,var(--accent) 60%,transparent);border-radius:12px;position:relative;z-index:2}
+.ordi.drg .lgh{cursor:grabbing}
+.ordi .ob{display:flex;flex-direction:column;gap:4px;flex:none}.ordi .ob .btn{padding:2px 10px;font-size:11px;line-height:1.3;min-width:34px}
+.ordi .sub2{font-size:12px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.ordi .no{flex:none;min-width:26px;text-align:center;font-size:12px;font-weight:700;color:var(--ac-text)}
 /* 별 모양 포인터 (마우스 환경에서만) */
 :root{--c-default:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23EEF3FF'/%3E%3Cstop offset='.5' stop-color='%23A9C3FB'/%3E%3Cstop offset='1' stop-color='%239A86E8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,auto;--c-pointer:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23EEF3FF'/%3E%3Cstop offset='.5' stop-color='%23A9C3FB'/%3E%3Cstop offset='1' stop-color='%239A86E8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.00 18.82,13.12 26.46,13.60 20.57,18.48 22.47,25.90 16.00,21.80 9.53,25.90 11.43,18.48 5.54,13.60 13.18,13.12' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.00 18.82,13.12 26.46,13.60 20.57,18.48 22.47,25.90 16.00,21.80 9.53,25.90 11.43,18.48 5.54,13.60 13.18,13.12' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M26.5 1.2999999999999998L27.68 4.32L30.7 5.5L27.68 6.68L26.5 9.7L25.32 6.68L22.3 5.5L25.32 4.32Z' fill='%23fff' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M5.5 23.5L6.34 25.66L8.5 26.5L6.34 27.34L5.5 29.5L4.66 27.34L2.5 26.5L4.66 25.66Z' fill='%23fff' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,pointer;--c-text:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 8V24' stroke='%23fff' stroke-width='5' stroke-linecap='round' stroke-opacity='.9'/%3E%3Cpath d='M16 8V24' stroke='%236384E0' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M16 0.5999999999999996L17.23 3.77L20.4 5L17.23 6.23L16 9.4L14.77 6.23L11.6 5L14.77 3.77Z' fill='%23B4CDFF' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3Cpath d='M16 22.6L17.23 25.77L20.4 27L17.23 28.23L16 31.4L14.77 28.23L11.6 27L14.77 25.77Z' fill='%23C9B6FF' stroke='%237a6ad8' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16,text;--c-no:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F4F5F8'/%3E%3Cstop offset='1' stop-color='%239AA1B5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='none' stroke='%232d3a85' stroke-opacity='.4' stroke-width='3.6' stroke-linejoin='round'/%3E%3Cpolygon points='16.00,6.50 18.70,13.28 25.99,13.76 20.37,18.42 22.17,25.49 16.00,21.60 9.83,25.49 11.63,18.42 6.01,13.76 13.30,13.28' fill='url(%23g)' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M7 25L25 7' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M7 25L25 7' stroke='%23E5646E' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 16 16,not-allowed}
 @media (hover:hover) and (pointer:fine){
@@ -1397,6 +1408,33 @@ function renderTrpg(){
   view.querySelectorAll(".stabs button").forEach(b=>b.onclick=()=>{ts=b.dataset.k;try{sessionStorage.setItem("ts",ts)}catch(_){}renderTrpg()});
   drawTpane();
 }
+let ordMode=false,ordSnap=null,ordList=[];
+function ordStart(){ordMode=true;ordSnap=D.trpg.logs.slice();drawTpane()}
+function ordSync(){const tl=$("tlist");if(!tl)return;
+  const dom=[...tl.querySelectorAll(".ordi")].map(e=>ordList[+e.dataset.oi]);
+  D.trpg.logs=tsort==="new"?dom.reverse():dom;
+  [...tl.querySelectorAll(".ordi .no")].forEach((e,i)=>e.textContent=i+1)}
+function drawOrdPane(el){
+  const T=D.trpg;ordList=T.logs.slice();
+  const disp=ordList.map((g,i)=>[g,i]);if(tsort==="new")disp.reverse();
+  el.innerHTML=`<h2>플레이 기록 · ${T.logs.length}</h2>
+    <div class="card ordbar"><b>순서 편집 중</b><span>왼쪽 ⠿ 손잡이를 끌어서 옮기거나 ▲▼를 눌러요. 지금 보이는 기준은 ${tsort==="new"?"최신순(맨 위가 가장 최근)":"오래된순(맨 위가 가장 오래된)"}이에요.</span><span class="ordbtn"><button class="btn pri" id="ord-ok" type="button">완료</button><button class="btn" id="ord-no" type="button">취소</button></span></div>
+    <div class="card" id="tlist">${disp.map(([g,i],n)=>`<div class="li lg ordi" data-oi="${i}"><span class="lgh" role="button" aria-label="끌어서 순서 바꾸기" title="끌어서 옮기기">⠿</span><span class="no">${n+1}</span><div class="m"><div class="lh"><b>${esc(g.title)}</b>${rpill(g.rule)}${g.role?`<span class="pill on">${esc(g.role)}</span>`:""}</div><div class="sub2">${esc([g.chars,g.size,g.author].filter(Boolean).join(" · "))}</div></div><div class="ob"><button class="btn mvb" type="button" data-mv="-1" aria-label="위로">▲</button><button class="btn mvb" type="button" data-mv="1" aria-label="아래로">▼</button></div></div>`).join("")}</div>`;
+  const tl=$("tlist");
+  tl.onclick=ev=>{const b=ev.target.closest&&ev.target.closest(".mvb");if(!b)return;const it=b.closest(".ordi"),d=+b.dataset.mv;
+    if(d<0){const p=it.previousElementSibling;if(p)tl.insertBefore(it,p)}else{const n=it.nextElementSibling;if(n)tl.insertBefore(n,it)}
+    ordSync();it.scrollIntoView({block:"nearest"})};
+  tl.addEventListener("pointerdown",ev=>{const h=ev.target.closest&&ev.target.closest(".lgh");if(!h||ev.button>0)return;ev.preventDefault();
+    const it=h.closest(".ordi");it.classList.add("drg");try{h.setPointerCapture(ev.pointerId)}catch(_){}
+    const mv=e=>{const y=e.clientY;if(y<90)scrollBy(0,-14);else if(y>innerHeight-90)scrollBy(0,14);
+      for(const s of tl.querySelectorAll(".ordi")){if(s===it)continue;const r=s.getBoundingClientRect();
+        if(y>r.top&&y<r.bottom){if(y<r.top+r.height/2)tl.insertBefore(it,s);else tl.insertBefore(it,s.nextSibling);break}}};
+    const up=()=>{h.removeEventListener("pointermove",mv);h.removeEventListener("pointerup",up);h.removeEventListener("pointercancel",up);it.classList.remove("drg");ordSync()};
+    h.addEventListener("pointermove",mv);h.addEventListener("pointerup",up);h.addEventListener("pointercancel",up)});
+  $("ord-no").onclick=()=>{D.trpg.logs=ordSnap;ordMode=false;ordSnap=null;drawTpane()};
+  $("ord-ok").onclick=()=>{const same=ordSnap&&ordSnap.length===D.trpg.logs.length&&ordSnap.every((g,i)=>g===D.trpg.logs[i]);
+    ordMode=false;ordSnap=null;if(same){drawTpane();toast("순서가 바뀌지 않았어요.");return}
+    commit("trpg")}}
 function drawTpane(){
   const T=D.trpg,P=T.prefs||{},el=$("tp");
   const eb=t=>canEdit?`<button class="btn et" data-t="${t}" style="float:right;margin:-4px 0 0 8px">✎ 편집</button>`:"";
@@ -1408,9 +1446,11 @@ function drawTpane(){
   else if(ts==="books")el.innerHTML=`<section class="card">${eb("books")}<h2>보유 룰북 · ${L(T.books).length}</h2><div class="tbl"><table><tr><th>룰</th><th>도서명</th><th>수록 시나리오</th><th>인원</th><th>저자</th></tr>
       ${L(T.books).map(b=>`<tr><td>${rpill(b.rule)}</td><td>${esc(b.title)}</td><td>${esc(b.sc)}</td><td>${esc(b.pp)}</td><td>${esc(b.author)}</td></tr>`).join("")}</table></div></section>`;
   else{
+    if(ordMode&&canEdit){drawOrdPane(el);return}
     const rules=["전체",...new Set(T.logs.map(g=>g.rule).filter(Boolean))];
-    el.innerHTML=`<h2>플레이 기록 · ${T.logs.length}</h2>${canEdit?`<p><button class="btn" id="addlog">＋ 기록 추가</button> <button class="btn" id="szm" type="button">구성 항목 관리</button></p>`:""}
+    el.innerHTML=`<h2>플레이 기록 · ${T.logs.length}</h2>${canEdit?`<p><button class="btn" id="addlog">＋ 기록 추가</button> <button class="btn" id="szm" type="button">구성 항목 관리</button> <button class="btn" id="ordm" type="button">↕ 순서 편집</button></p>`:""}
       <div class="tools"><input id="tq" type="search" placeholder="시나리오·참여자·저자 검색" value="${esc(tq)}"><div class="seg">${rules.map(s=>`<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div><div class="seg2" id="tsort"><button type="button" data-o="new">최신순</button><button type="button" data-o="old">오래된순</button></div></div><div class="card" id="tlist"></div>`;
+    {const om=$("ordm");if(om)om.onclick=ordStart}
     $("tq").oninput=e=>{tq=e.target.value;drawTrpg()};
     el.querySelectorAll("#tsort button").forEach(x=>x.onclick=()=>{tsort=x.dataset.o;try{sessionStorage.setItem("tsort",tsort)}catch(_){}drawTrpg()});
     el.querySelectorAll(".seg button").forEach(x=>x.onclick=()=>{tr=x.dataset.s;drawTrpg()});
@@ -1917,6 +1957,7 @@ setTimeout(bgAuto,200);
 
 let _wasGal=false,_wasChars=false,_galY=0;
 function render(){
+  if(ordMode){if(ordSnap)D.trpg.logs=ordSnap;ordMode=false;ordSnap=null}
   admBar();pubBarUpdate();
   const r=route();
   const _g=!editing&&r.p==="chars"&&!r.rd&&!r.rel&&!r.c;
